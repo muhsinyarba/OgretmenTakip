@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Öğretmen Takip - Profesyonel</title>
+<title>Öğretmen Takip - Profesyonel Sürüm</title>
+<link rel="manifest" href="manifest.json">
 <style>
   :root { --primary: #2563eb; --success: #16a34a; --danger: #dc2626; --warn: #d97706; --gray: #6b7280; --border: #e5e7eb; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: sans-serif; background: #f0f4ff; color: #111827; padding-bottom: 90px; }
-  header { background: var(--primary); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 1000; }
+  header { background: var(--primary); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
   
-  /* Menü Çubuğu */
   nav { display: flex; background: white; border-bottom: 1px solid var(--border); position: sticky; top: 55px; z-index: 999; overflow-x: auto; }
-  nav button { flex: 1; min-width: 100px; padding: 12px 5px; border: none; background: none; font-weight: bold; cursor: pointer; color: var(--gray); border-bottom: 3px solid transparent; font-size: 11px; white-space: nowrap; }
+  nav button { flex: 1; min-width: 90px; padding: 12px 5px; border: none; background: none; font-weight: bold; cursor: pointer; color: var(--gray); border-bottom: 3px solid transparent; font-size: 11px; white-space: nowrap; }
   nav button.active { color: var(--primary); border-bottom-color: var(--primary); background: #f0f7ff; }
 
   .page { display: none; padding: 12px; }
@@ -20,23 +20,22 @@
   .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
   h3 { font-size: 14px; margin-bottom: 10px; color: var(--primary); border-bottom: 1px solid #eee; padding-bottom: 5px; }
 
-  /* Liste Yapısı */
   .student-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
   .s-info { flex: 1; }
   .s-name { font-weight: bold; font-size: 13px; display: block; }
   .s-no { font-size: 10px; color: var(--gray); }
 
-  /* Buton Grupları */
   .btn-group { display: flex; gap: 4px; }
   .btn-opt { padding: 8px 10px; border-radius: 6px; border: 1px solid #ddd; background: white; font-weight: bold; cursor: pointer; font-size: 11px; min-width: 40px; text-align: center; }
   .btn-opt.active.v { background: var(--success); color: white; border-color: var(--success); }
   .btn-opt.active.y { background: var(--danger); color: white; border-color: var(--danger); }
   .btn-opt.active.p { background: #8b5cf6; color: white; border-color: #8b5cf6; }
 
-  /* Form Elemanları */
-  select, input[type="date"] { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px; }
+  select, input[type="date"], input[type="text"] { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px; }
   .save-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 12px; border-top: 1px solid #ddd; z-index: 1001; }
   .btn-main { width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; }
+  
+  .summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 13px; }
 </style>
 </head>
 <body>
@@ -56,7 +55,7 @@
 
 <div id="devamsizlik" class="page active">
   <div class="card">
-    <h3>🚫 Günlük Genel Yoklama</h3>
+    <h3>🚫 Genel Yoklama (Günlük)</h3>
     <input type="date" id="dateDev" onchange="renderDev()">
     <div id="listDev"></div>
   </div>
@@ -64,171 +63,5 @@
 
 <div id="katilim" class="page">
   <div class="card">
-    <h3>⭐ Derse Katılım Takibi</h3>
-    <select id="selKatDers" onchange="renderKat()"></select>
-    <input type="date" id="dateKat" onchange="renderKat()">
-    <div id="listKat">Ders seçiniz...</div>
-  </div>
-</div>
-
-<div id="odev" class="page">
-  <div class="card">
-    <h3>📝 Ödev Kontrolü</h3>
-    <select id="selOdevDers" onchange="renderOdev()"></select>
-    <input type="date" id="dateOdev" onchange="renderOdev()">
-    <div id="listOdev">Ders seçiniz...</div>
-  </div>
-</div>
-
-<div id="rapor" class="page">
-  <div class="card">
-    <h3>📊 Öğrenci Özetleri</h3>
-    <div id="listRapor"></div>
-  </div>
-</div>
-
-<div id="ayarlar" class="page">
-  <div class="card">
-    <h3>⚙️ Sınıf Bilgisi</h3>
-    <input type="text" id="inpCls" placeholder="Sınıf Adı (Örn: 4-A)">
-    <button class="btn-main" onclick="saveClsName()">Kaydet</button>
-    <button onclick="fullClear()" style="width:100%; margin-top:15px; color:red; border:1px solid red; background:none; padding:10px; border-radius:8px;">Verileri Sıfırla</button>
-  </div>
-</div>
-
-<div class="save-bar">
-  <button class="btn-main" onclick="masterSave()">💾 Değişiklikleri Kaydet</button>
-</div>
-
-<script>
-// Alfabetik Soyadlı Liste
-const STUDENTS = [
-  {no:668,ad:"Ali Ömer",soyad:"ARSLAN"},{no:309,ad:"Arda",soyad:"ARSLAN"},{no:614,ad:"Ayşe",soyad:"ŞINIK"},
-  {no:619,ad:"Barış",soyad:"HALLUM"},{no:485,ad:"Beyazıt",soyad:"GÖRKEN"},{no:318,ad:"Bilgesu",soyad:"TOPRAK"},
-  {no:788,ad:"Bora",soyad:"ALAS"},{no:839,ad:"Defne",soyad:"KAYNAR"},{no:873,ad:"Derin",soyad:"URAZ"},
-  {no:789,ad:"Elif",soyad:"ÇİTKAP"},{no:894,ad:"Emir Efe",soyad:"ALPER"},{no:554,ad:"Esra",soyad:"DEMİRLİ"},
-  {no:761,ad:"Eymen",soyad:"HALICI"},{no:631,ad:"Hüma",soyad:"ALTINIŞIK"},{no:760,ad:"İpek",soyad:"ELDEK"},
-  {no:470,ad:"Irmak",soyad:"ERDEM"},{no:512,ad:"Kumsal",soyad:"GÜNDOĞARKEN"},{no:883,ad:"Melis",soyad:"KILIÇ"},
-  {no:712,ad:"Mert",soyad:"BALCIOĞLU"},{no:901,ad:"Musa",soyad:"KARAÖZ"},{no:616,ad:"Mustafa",soyad:"DAL"},
-  {no:556,ad:"Naz",soyad:"AKGÜN"},{no:526,ad:"Nisa",soyad:"YALILAR"},{no:657,ad:"Onuralp",soyad:"TOK"},
-  {no:784,ad:"Önder",soyad:"TURĞAY"},{no:639,ad:"Poyraz",soyad:"SEZGİN"},{no:696,ad:"Roza",soyad:"AYDIN"},
-  {no:849,ad:"Rüzgar",soyad:"GÜL"},{no:484,ad:"Yaz",soyad:"YILMAZ"},{no:650,ad:"Yusuf",soyad:"BİRLİK"}
-].sort((a,b) => a.ad.localeCompare(b.ad, 'tr'));
-
-const DERSLER = ["Türkçe","Matematik","Fen Bilimleri","Sosyal Bilgiler","İngilizce","Müzik","Görsel Sanatlar"];
-
-let activeTab = 'devamsizlik';
-let db = JSON.parse(localStorage.getItem('edu_master_v3') || '{"dev":{}, "kat":{}, "odev":{}}');
-
-function tab(id, btn) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    btn.classList.add('active');
-    activeTab = id;
-    if(id === 'rapor') renderRapor();
-}
-
-// DEVAMSIZLIK RENDER
-function renderDev() {
-    const t = document.getElementById('dateDev').value;
-    const cont = document.getElementById('listDev');
-    const data = db.dev[t] || {};
-    cont.innerHTML = STUDENTS.map(s => {
-        const v = data[s.no] || 'var';
-        return `<div class="student-row">
-            <div class="s-info"><span class="s-name">${s.ad} ${s.soyad}</span></div>
-            <div class="btn-group">
-                <button class="btn-opt v ${v==='var'?'active':''}" onclick="upd('dev','${t}',${s.no},'var')">VAR</button>
-                <button class="btn-opt y ${v==='yok'?'active':''}" onclick="upd('dev','${t}',${s.no},'yok')">YOK</button>
-            </div>
-        </div>`;
-    }).join('');
-}
-
-// KATILIM RENDER
-function renderKat() {
-    const d = document.getElementById('selKatDers').value;
-    const t = document.getElementById('dateKat').value;
-    const cont = document.getElementById('listKat');
-    if(!d) { cont.innerHTML = "Ders seçiniz."; return; }
-    const key = `${t}_${d}`;
-    const data = db.kat[key] || {};
-    cont.innerHTML = STUDENTS.map(s => {
-        const v = data[s.no] || false;
-        return `<div class="student-row">
-            <div class="s-info"><span class="s-name">${s.ad} ${s.soyad}</span></div>
-            <button class="btn-opt p ${v?'active':''}" onclick="upd('kat','${key}',${s.no},${!v})">${v?'YILDIZ':'PASİF'}</button>
-        </div>`;
-    }).join('');
-}
-
-// ODEV RENDER
-function renderOdev() {
-    const d = document.getElementById('selOdevDers').value;
-    const t = document.getElementById('dateOdev').value;
-    const cont = document.getElementById('listOdev');
-    if(!d) { cont.innerHTML = "Ders seçiniz."; return; }
-    const key = `${t}_${d}`;
-    const data = db.odev[key] || {};
-    cont.innerHTML = STUDENTS.map(s => {
-        const v = data[s.no] || false;
-        return `<div class="student-row">
-            <div class="s-info"><span class="s-name">${s.ad} ${s.soyad}</span></div>
-            <button class="btn-opt p ${v?'active':''}" onclick="upd('odev','${key}',${s.no},${!v})">${v?'TAM':'YOK'}</button>
-        </div>`;
-    }).join('');
-}
-
-function upd(type, key, no, val) {
-    if(!db[type][key]) db[type][key] = {};
-    db[type][key][no] = val;
-    if(type==='dev') renderDev();
-    if(type==='kat') renderKat();
-    if(type==='odev') renderOdev();
-}
-
-function masterSave() {
-    localStorage.setItem('edu_master_v3', JSON.stringify(db));
-    alert("Tüm değişiklikler kaydedildi!");
-}
-
-function renderRapor() {
-    const cont = document.getElementById('listRapor');
-    cont.innerHTML = STUDENTS.map(s => {
-        let yok = 0, yildiz = 0, odev = 0;
-        Object.values(db.dev).forEach(day => { if(day[s.no]==='yok') yok++; });
-        Object.values(db.kat).forEach(lesson => { if(lesson[s.no]) yildiz++; });
-        Object.values(db.odev).forEach(lesson => { if(lesson[s.no]) odev++; });
-        
-        return `<div class="summary-row">
-            <span><b>${s.ad} ${s.soyad}</b></span>
-            <span>🚫 ${yok} | ⭐ ${yildiz} | ✅ ${odev}</span>
-        </div>`;
-    }).join('');
-}
-
-function saveClsName() {
-    const v = document.getElementById('inpCls').value;
-    localStorage.setItem('cls_v3', v);
-    document.getElementById('clsTitle').innerText = v;
-}
-
-function fullClear() { if(confirm("TÜM VERİLER SİLİNECEK!")) { localStorage.clear(); location.reload(); } }
-
-document.addEventListener('DOMContentLoaded', () => {
-    const today = new Date().toISOString().split('T')[0];
-    ['dateDev','dateKat','dateOdev'].forEach(id => document.getElementById(id).value = today);
-    
-    let dOpts = '<option value="">-- Seç --</option>' + DERSLER.map(d => `<option value="${d}">${d}</option>`).join('');
-    ['selKatDers','selOdevDers'].forEach(id => document.getElementById(id).innerHTML = dOpts);
-    
-    const saved = localStorage.getItem('cls_v3');
-    if(saved) { document.getElementById('clsTitle').innerText = saved; document.getElementById('inpCls').value = saved; }
-    
-    document.getElementById('dateNow').innerText = new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' });
-    renderDev();
-});
-</script>
-</body>
-</html>
+    <h3>⭐ Derse Katılım (Ders Bazlı)</h3>
+    <select id
