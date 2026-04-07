@@ -1,8 +1,16 @@
-const CACHE_NAME = 'ogretmen-takip-v3'; // Sürümü v3 yaparak tüm eski verileri siliyoruz
-const ASSETS = ['./', './index.html', './manifest.json', './android-chrome-192x192.png', './android-chrome-512x512.png'];
+const CACHE_NAME = 'ogretmen-v4';
+const ASSETS = [
+  './index.html',
+  './manifest.json',
+  './android-chrome-192x192.png',
+  './android-chrome-512x512.png',
+  './screenshot_mobile.png'
+];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+  );
   self.skipWaiting();
 });
 
@@ -16,5 +24,7 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  e.respondWith(caches.match(e.request).then((res) => res || fetch(e.request)));
+  e.respondWith(
+    caches.match(e.request).then((res) => res || fetch(e.request))
+  );
 });
