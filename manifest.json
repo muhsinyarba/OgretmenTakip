@@ -1,24 +1,26 @@
 {
   "name": "Öğretmen Takip Sistemi",
   "short_name": "Öğretmen",
-  "id": "/OgretmenTakip/",
   "description": "Öğrenci devamsızlık, katılım ve ödev takip sistemi",
+  "id": "/OgretmenTakip/",
   "start_url": "./index.html",
   "display": "standalone",
+  "orientation": "portrait",
+  "prefer_related_applications": false,
   "background_color": "#f0f4ff",
   "theme_color": "#2563eb",
-  "categories": ["education", "productivity"],
   "icons": [
     {
       "src": "android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "android-chrome-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "screenshots": [
@@ -27,7 +29,7 @@
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Mobil Görünüm"
+      "label": "Giriş Ekranı"
     }
   ]
 }
