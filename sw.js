@@ -1,5 +1,13 @@
 const CACHE = 'ogretmen-takip-v1';
-const FILES = ['./index.html', './manifest.json', './icon.png'];
+// GitHub'daki gerçek dosya isimlerine göre güncellendi
+const FILES = [
+  './',
+  './index.html',
+  './manifest.json',
+  './ikon.png',
+  './android-chrome-192x192.png',
+  './android-chrome-512x512.png'
+];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)));
