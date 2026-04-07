@@ -383,8 +383,20 @@ function exportData() {
 function importData(e) {
   const file=e.target.files[0]; if(!file) return;
   const r=new FileReader();
-  r.onload=ev=>{ try{ const d=JSON.parse(ev.target.result); if(d.attendance) attendance=d.attendance; if(d.homework) homework=d.homework; save(); alert('İçe aktarıldı!'); }catch(){ alert('Geçersiz dosya!'); }};
+  r.onload=ev=>{ 
+    try { 
+      const d=JSON.parse(ev.target.result); 
+      if(d.attendance) attendance=d.attendance; 
+      if(d.homework) homework=d.homework; 
+      save(); 
+      alert('İçe aktarıldı!'); 
+      location.reload(); // Veriler gelince sayfayı yenile
+    } catch(err) { // Buraya err eklendi
+      alert('Geçersiz dosya!'); 
+    }
+  };
   r.readAsText(file);
+}
 }
 
 function clearData() {
