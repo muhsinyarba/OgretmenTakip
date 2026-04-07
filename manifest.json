@@ -6,9 +6,9 @@
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
-  "prefer_related_applications": false,
   "background_color": "#f0f4ff",
   "theme_color": "#2563eb",
+  "categories": ["education", "productivity", "utilities"],
   "icons": [
     {
       "src": "android-chrome-192x192.png",
@@ -20,13 +20,13 @@
       "src": "android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any"
     }
   ],
   "screenshots": [
     {
       "src": "screenshot_mobile.png",
-      "sizes": "1348x300",
+      "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Giriş Ekranı"
