@@ -1,8 +1,8 @@
 {
-  "name": "Öğretmen Takip",
-  "short_name": "Öğr. Takip",
+  "name": "Öğretmen Takip Sistemi",
+  "short_name": "Öğretmen",
   "id": "/OgretmenTakip/",
-  "description": "Öğrenci katılım ve ödev takip uygulaması",
+  "description": "Öğrenci devamsızlık, katılım ve ödev takip sistemi",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f0f4ff",
@@ -28,13 +28,6 @@
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Mobil Görünüm"
-    },
-    {
-      "src": "screenshot_mobile.png",
-      "sizes": "1080x1920",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Masaüstü Görünüm"
     }
   ]
 }
