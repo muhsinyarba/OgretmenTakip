@@ -8,8 +8,6 @@
   "background_color": "#f0f4ff",
   "theme_color": "#2563eb",
   "categories": ["education", "productivity"],
-  "orientation": "portrait",
-  "prefer_related_applications": false,
   "icons": [
     {
       "src": "android-chrome-192x192.png",
@@ -29,7 +27,14 @@
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Öğrenci Takip Ekranı"
+      "label": "Mobil Görünüm"
+    },
+    {
+      "src": "screenshot_mobile.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Masaüstü Görünüm"
     }
   ]
 }
