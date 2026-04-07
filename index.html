@@ -8,107 +8,52 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Öğretmen Takip">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Öğretmen Takip</title>
 <style>
   :root {
-    --primary: #2563eb;
-    --primary-light: #dbeafe;
-    --success: #16a34a;
-    --success-light: #dcfce7;
-    --danger: #dc2626;
-    --danger-light: #fee2e2;
-    --warn: #d97706;
-    --warn-light: #fef3c7;
-    --gray: #6b7280;
-    --gray-light: #f3f4f6;
-    --border: #e5e7eb;
-    --white: #ffffff;
-    --text: #111827;
+    --primary: #2563eb; --primary-light: #dbeafe; --success: #16a34a; --success-light: #dcfce7;
+    --danger: #dc2626; --danger-light: #fee2e2; --warn: #d97706; --warn-light: #fef3c7;
+    --gray: #6b7280; --gray-light: #f3f4f6; --border: #e5e7eb; --white: #ffffff; --text: #111827;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f4ff; color: var(--text); font-size: 14px; }
-
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f4ff; color: var(--text); font-size: 14px; padding-bottom: env(safe-area-inset-bottom); }
   header { background: var(--primary); color: white; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
   header h1 { font-size: 16px; font-weight: 700; }
-  header span { font-size: 12px; opacity: 0.85; }
-
   nav { display: flex; background: white; border-bottom: 1px solid var(--border); overflow-x: auto; position: sticky; top: 53px; z-index: 99; }
-  nav button { flex: 1; min-width: 80px; padding: 10px 6px; border: none; background: none; font-size: 12px; font-weight: 600; color: var(--gray); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; }
+  nav button { flex: 1; min-width: 80px; padding: 12px 6px; border: none; background: none; font-size: 12px; font-weight: 600; color: var(--gray); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; }
   nav button.active { color: var(--primary); border-bottom-color: var(--primary); background: var(--primary-light); }
-
   .page { display: none; padding: 12px; }
   .page.active { display: block; }
-
   .card { background: white; border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
   .card h2 { font-size: 15px; font-weight: 700; margin-bottom: 10px; color: var(--primary); }
-
-  select, input[type=text], input[type=date] { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: white; color: var(--text); margin-bottom: 10px; }
-  select:focus, input:focus { outline: none; border-color: var(--primary); }
-
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 16px; border-radius: 8px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-  .btn-primary { background: var(--primary); color: white; width: 100%; }
-  .btn-primary:active { background: #1d4ed8; }
-  .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
-  .btn-outline { background: none; border: 1.5px solid var(--primary); color: var(--primary); }
-
-  .student-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); gap: 8px; }
-  .student-row:last-child { border-bottom: none; }
-  .sname { font-weight: 600; font-size: 13px; flex: 1; }
-  .sno { font-size: 11px; color: var(--gray); }
-
+  select, input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: white; margin-bottom: 10px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 16px; border-radius: 8px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%; }
+  .btn-primary { background: var(--primary); color: white; }
+  .student-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
   .att-btns { display: flex; gap: 4px; }
-  .att-btn { padding: 6px 10px; border-radius: 6px; border: 1.5px solid var(--border); background: white; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
-  .att-btn.var { background: var(--success); color: white; border-color: var(--success); }
-  .att-btn.yok { background: var(--danger); color: white; border-color: var(--danger); }
-  .att-btn.gec { background: var(--warn); color: white; border-color: var(--warn); }
-
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .att-btn { padding: 6px 10px; border-radius: 6px; border: 1.5px solid var(--border); background: white; font-weight: 700; cursor: pointer; }
+  .att-btn.var { background: var(--success); color: white; }
+  .att-btn.yok { background: var(--danger); color: white; }
+  .att-btn.gec { background: var(--warn); color: white; }
+  .badge { padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; }
   .badge-success { background: var(--success-light); color: var(--success); }
-  .badge-danger { background: var(--danger-light); color: var(--danger); }
   .badge-warn { background: var(--warn-light); color: var(--warn); }
-  .badge-gray { background: var(--gray-light); color: var(--gray); }
-
   .hw-item { padding: 10px 0; border-bottom: 1px solid var(--border); }
-  .hw-item:last-child { border-bottom: none; }
-  .hw-title { font-weight: 600; margin-bottom: 6px; }
-  .hw-meta { font-size: 12px; color: var(--gray); margin-bottom: 8px; }
-  .hw-students { display: flex; flex-wrap: wrap; gap: 4px; }
-  .hw-tag { padding: 3px 8px; border-radius: 12px; font-size: 11px; cursor: pointer; border: 1px solid var(--border); background: var(--gray-light); }
+  .hw-tag { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 11px; border: 1px solid var(--border); margin: 2px; cursor: pointer; }
   .hw-tag.teslim { background: var(--success-light); color: var(--success); border-color: var(--success); }
-
   .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-  .stat-box { background: white; border-radius: 10px; padding: 12px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-  .stat-num { font-size: 24px; font-weight: 800; color: var(--primary); }
-  .stat-label { font-size: 11px; color: var(--gray); margin-top: 2px; }
-
-  .report-row { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); gap: 8px; }
-  .report-row:last-child { border-bottom: none; }
-  .report-name { flex: 1; font-size: 13px; font-weight: 600; }
-  .progress-bar { height: 6px; border-radius: 3px; background: var(--gray-light); overflow: hidden; width: 80px; }
-  .progress-fill { height: 100%; border-radius: 3px; background: var(--primary); transition: width 0.3s; }
-
-  .saved-msg { background: var(--success-light); color: var(--success); padding: 8px 12px; border-radius: 8px; text-align: center; font-weight: 600; font-size: 13px; margin-bottom: 10px; display: none; }
-
-  .form-row { display: flex; gap: 8px; }
-  .form-row input { margin-bottom: 0; }
-  .form-row .btn { flex-shrink: 0; }
-
-  .empty { text-align: center; color: var(--gray); padding: 24px; font-size: 13px; }
-  #exportBtn { background: #059669; color: white; width: 100%; margin-top: 8px; }
-
-  /* iOS safe area */
-  body { padding-bottom: env(safe-area-inset-bottom); }
+  .stat-box { background: white; border-radius: 10px; padding: 12px; text-align: center; }
+  .report-row { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .progress-bar { height: 6px; border-radius: 3px; background: var(--gray-light); width: 80px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--primary); }
 </style>
 </head>
 <body>
 
 <header>
-  <div>
-    <h1>📚 Öğretmen Takip</h1>
-    <span id="todayLabel"></span>
-  </div>
-  <div id="classLabel" style="font-size:12px;text-align:right;opacity:0.9;max-width:120px;"></div>
+  <div><h1>📚 Öğretmen Takip</h1><span id="todayLabel"></span></div>
+  <div id="classLabel"></div>
 </header>
 
 <nav>
@@ -121,11 +66,8 @@
 <div id="yoklama" class="page active">
   <div class="card">
     <h2>📋 Yoklama Al</h2>
-    <label style="font-size:12px;color:var(--gray);font-weight:600;">Ders Seç</label>
-    <select id="yoklamaDers"><option value="">-- Ders Seçin --</option></select>
-    <label style="font-size:12px;color:var(--gray);font-weight:600;">Tarih</label>
+    <select id="yoklamaDers"></select>
     <input type="date" id="yoklamaTarih">
-    <div id="savedMsg" class="saved-msg">✅ Yoklama kaydedildi!</div>
     <div id="studentList"></div>
     <button class="btn btn-primary" onclick="saveAttendance()" id="saveAttBtn" style="display:none;margin-top:10px;">💾 Kaydet</button>
   </div>
@@ -134,14 +76,14 @@
 <div id="odev" class="page">
   <div class="card">
     <h2>➕ Yeni Ödev</h2>
-    <select id="odevDers"><option value="">-- Ders Seçin --</option></select>
+    <select id="odevDers"></select>
     <input type="text" id="odevBaslik" placeholder="Ödev başlığı">
     <input type="date" id="odevTarih">
     <button class="btn btn-primary" onclick="addHW()">Ödev Ekle</button>
   </div>
   <div class="card">
     <h2>📝 Ödevler</h2>
-    <select id="odevFilter" onchange="renderHW()"><option value="">Tüm Dersler</option></select>
+    <select id="odevFilter" onchange="renderHW()"></select>
     <div id="hwList"></div>
   </div>
 </div>
@@ -149,32 +91,21 @@
 <div id="rapor" class="page">
   <div class="stat-grid" id="statGrid"></div>
   <div class="card">
-    <h2>📊 Öğrenci Bazlı Rapor</h2>
-    <select id="raporDers" onchange="renderReport()"><option value="">Tüm Dersler</option></select>
+    <h2>📊 Öğrenci Raporu</h2>
+    <select id="raporDers" onchange="renderReport()"></select>
     <div id="reportList"></div>
   </div>
 </div>
 
 <div id="ayarlar" class="page">
   <div class="card">
-    <h2>⚙️ Sınıf Adı</h2>
-    <div class="form-row">
-      <input type="text" id="classNameInput" placeholder="örn: 4-A">
-      <button class="btn btn-primary btn-sm" onclick="saveClassName()">Kaydet</button>
-    </div>
+    <h2>⚙️ Sınıf Ayarları</h2>
+    <input type="text" id="classNameInput" placeholder="örn: 4-A">
+    <button class="btn btn-primary" onclick="saveClassName()">Kaydet</button>
   </div>
   <div class="card">
     <h2>👤 Öğrenci Listesi</h2>
-    <div id="studentCount" style="font-size:13px;color:var(--gray);margin-bottom:8px;"></div>
-    <div id="settingsStudentList" style="max-height:300px;overflow-y:auto;"></div>
-  </div>
-  <div class="card">
-    <h2>💾 Veri Yönetimi</h2>
-    <button class="btn" id="exportBtn" onclick="exportData()">📤 JSON Olarak Dışa Aktar</button>
-    <label class="btn btn-outline btn-sm" style="width:100%;margin-top:8px;cursor:pointer;">
-      📥 JSON İçe Aktar <input type="file" accept=".json" style="display:none;" onchange="importData(event)">
-    </label>
-    <button class="btn btn-sm" style="background:var(--danger-light);color:var(--danger);border:none;width:100%;margin-top:8px;" onclick="clearData()">🗑️ Tüm Verileri Sil</button>
+    <div id="settingsStudentList"></div>
   </div>
 </div>
 
@@ -197,11 +128,7 @@ const STUDENTS = [
   {no:894,ad:"Emir Efe",soyad:"ALPER"},{no:901,ad:"Musa",soyad:"KARAÖZ"}
 ];
 
-const DERSLER = [
-  "Türkçe","Matematik","Fen Bilimleri","Sosyal Bilgiler","İngilizce",
-  "Beden Eğitimi ve Oyun","Din Kültürü ve Ahlak Bilgisi","Trafik Güvenliği",
-  "Müzik","İnsan Hakları Yurttaşlık ve Demokrasi","Görsel Sanatlar"
-];
+const DERSLER = ["Türkçe","Matematik","Fen Bilimleri","Sosyal Bilgiler","İngilizce","Beden Eğitimi","Din Kültürü","Trafik Güvenliği","Müzik","İnsan Hakları","Görsel Sanatlar"];
 
 let attendance = {}, homework = [], attState = {};
 
@@ -209,9 +136,14 @@ function load() {
   try {
     const a = localStorage.getItem('att'); if(a) attendance = JSON.parse(a);
     const h = localStorage.getItem('hw'); if(h) homework = JSON.parse(h);
-    const c = localStorage.getItem('cls'); if(c) { document.getElementById('classNameInput').value=c; document.getElementById('classLabel').textContent=c; }
-  } catch(e){}
+    const c = localStorage.getItem('cls'); 
+    if(c) { 
+        document.getElementById('classNameInput').value=c; 
+        document.getElementById('classLabel').textContent=c; 
+    }
+  } catch(e) { console.error("Yükleme hatası:", e); }
 }
+
 function save() {
   localStorage.setItem('att', JSON.stringify(attendance));
   localStorage.setItem('hw', JSON.stringify(homework));
@@ -220,25 +152,16 @@ function save() {
 function initSelects() {
   ['yoklamaDers','odevDers','odevFilter','raporDers'].forEach(id => {
     const el = document.getElementById(id);
+    if(!el) return;
     const isFilter = id==='odevFilter'||id==='raporDers';
-    const opts = isFilter ? ['<option value="">Tüm Dersler</option>'] : ['<option value="">-- Ders Seçin --</option>'];
-    DERSLER.forEach(d => opts.push(`<option value="${d}">${d}</option>`));
-    el.innerHTML = opts.join('');
+    let html = isFilter ? '<option value="">Tüm Dersler</option>' : '<option value="">-- Ders Seçin --</option>';
+    DERSLER.forEach(d => html += `<option value="${d}">${d}</option>`);
+    el.innerHTML = html;
   });
 }
 
 function today() { return new Date().toISOString().split('T')[0]; }
 function formatDate(d) { if(!d) return ''; const [y,m,day]=d.split('-'); return `${day}.${m}.${y}`; }
-
-document.addEventListener('DOMContentLoaded', () => {
-  load(); initSelects();
-  document.getElementById('yoklamaTarih').value = today();
-  document.getElementById('odevTarih').value = today();
-  document.getElementById('todayLabel').textContent = formatDate(today());
-  document.getElementById('yoklamaDers').addEventListener('change', renderStudentList);
-  document.getElementById('yoklamaTarih').addEventListener('change', renderStudentList);
-  renderSettings();
-});
 
 function showPage(p, btn) {
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
@@ -258,15 +181,15 @@ function renderStudentList() {
   const key = `${tarih}_${ders}`;
   attState = attendance[key] ? {...attendance[key]} : {};
   STUDENTS.forEach(s=>{ if(!attState[s.no]) attState[s.no]='var'; });
-  btn.style.display='flex';
-  renderAttList();
+  btn.style.display='block';
+  renderAttRows();
 }
 
-function renderAttList() {
+function renderAttRows() {
   document.getElementById('studentList').innerHTML = STUDENTS.map(s => {
     const st = attState[s.no]||'var';
     return `<div class="student-row">
-      <div><div class="sname">${s.ad} ${s.soyad}</div><div class="sno">#${s.no}</div></div>
+      <div><b>${s.ad} ${s.soyad}</b><br><small>#${s.no}</small></div>
       <div class="att-btns">
         <button class="att-btn ${st==='var'?'var':''}" onclick="setAtt(${s.no},'var')">✓</button>
         <button class="att-btn ${st==='gec'?'gec':''}" onclick="setAtt(${s.no},'gec')">G</button>
@@ -276,7 +199,7 @@ function renderAttList() {
   }).join('');
 }
 
-function setAtt(no, val) { attState[no]=val; renderAttList(); }
+function setAtt(no, val) { attState[no]=val; renderAttRows(); }
 
 function saveAttendance() {
   const ders = document.getElementById('yoklamaDers').value;
@@ -284,130 +207,48 @@ function saveAttendance() {
   if(!ders||!tarih) return;
   attendance[`${tarih}_${ders}`] = {...attState};
   save();
-  const msg = document.getElementById('savedMsg');
-  msg.style.display='block';
-  setTimeout(()=>msg.style.display='none',2000);
+  alert("Kaydedildi!");
 }
 
 function addHW() {
-  const ders = document.getElementById('odevDers').value;
-  const baslik = document.getElementById('odevBaslik').value.trim();
-  const tarih = document.getElementById('odevTarih').value;
-  if(!ders||!baslik||!tarih) return alert('Tüm alanları doldurun!');
-  const teslim = {};
-  STUDENTS.forEach(s=>teslim[s.no]=false);
-  homework.push({id:Date.now(), ders, baslik, tarih, teslim});
-  save();
-  document.getElementById('odevBaslik').value='';
-  renderHW();
+    const ders = document.getElementById('odevDers').value;
+    const baslik = document.getElementById('odevBaslik').value;
+    const tarih = document.getElementById('odevTarih').value;
+    if(!ders || !baslik || !tarih) return alert("Eksik alan!");
+    const teslim = {}; STUDENTS.forEach(s => teslim[s.no] = false);
+    homework.push({id: Date.now(), ders, baslik, tarih, teslim});
+    save(); renderHW();
 }
 
 function renderHW() {
-  const filter = document.getElementById('odevFilter').value;
-  const list = document.getElementById('hwList');
-  let hw = homework.filter(h=>!filter||h.ders===filter).sort((a,b)=>b.tarih.localeCompare(a.tarih));
-  if(!hw.length){list.innerHTML='<div class="empty">Henüz ödev yok.</div>';return;}
-  list.innerHTML = hw.map(h => {
-    const done = Object.values(h.teslim).filter(Boolean).length;
-    return `<div class="hw-item">
-      <div class="hw-title">${h.baslik}</div>
-      <div class="hw-meta">${h.ders} • Son: ${formatDate(h.tarih)} • <span class="badge ${done===STUDENTS.length?'badge-success':'badge-warn'}">${done}/${STUDENTS.length} teslim</span></div>
-      <div class="hw-students">${STUDENTS.map(s=>`<span class="hw-tag ${h.teslim[s.no]?'teslim':''}" onclick="toggleHW(${h.id},${s.no})">${s.ad.split(' ')[0]}</span>`).join('')}</div>
-      <button class="btn btn-sm" style="margin-top:8px;background:var(--danger-light);color:var(--danger);border:none;" onclick="deleteHW(${h.id})">🗑️ Sil</button>
-    </div>`;
-  }).join('');
+    const filter = document.getElementById('odevFilter').value;
+    const list = document.getElementById('hwList');
+    const hw = homework.filter(h => !filter || h.ders === filter);
+    list.innerHTML = hw.map(h => {
+        const done = Object.values(h.teslim).filter(Boolean).length;
+        return `<div class="hw-item">
+            <b>${h.baslik}</b> (${h.ders})<br>
+            <span class="badge ${done===STUDENTS.length?'badge-success':'badge-warn'}">${done}/${STUDENTS.length} teslim</span>
+            <div style="margin-top:5px;">${STUDENTS.map(s => `<span class="hw-tag ${h.teslim[s.no]?'teslim':''}" onclick="toggleHW(${h.id},${s.no})">${s.ad}</span>`).join('')}</div>
+        </div>`;
+    }).join('');
 }
 
 function toggleHW(id, no) {
-  const h = homework.find(x=>x.id===id); if(!h) return;
-  h.teslim[no]=!h.teslim[no]; save(); renderHW();
-}
-
-function deleteHW(id) {
-  if(!confirm('Bu ödevi silmek istediğinizden emin misiniz?')) return;
-  homework=homework.filter(x=>x.id!==id); save(); renderHW();
+    const h = homework.find(x => x.id === id);
+    if(h) { h.teslim[no] = !h.teslim[no]; save(); renderHW(); }
 }
 
 function renderReport() {
-  const filter = document.getElementById('raporDers').value;
-  const keys = Object.keys(attendance);
-  document.getElementById('statGrid').innerHTML = `
-    <div class="stat-box"><div class="stat-num">${STUDENTS.length}</div><div class="stat-label">Öğrenci</div></div>
-    <div class="stat-box"><div class="stat-num">${keys.length}</div><div class="stat-label">Yoklama</div></div>
-    <div class="stat-box"><div class="stat-num">${homework.length}</div><div class="stat-label">Ödev</div></div>
-    <div class="stat-box"><div class="stat-num">${DERSLER.length}</div><div class="stat-label">Ders</div></div>
-  `;
-  const rows = STUDENTS.map(s => {
-    let total=0, present=0, hwTotal=0, hwDone=0;
-    Object.entries(attendance).forEach(([key,val])=>{
-      const ders=key.split('_').slice(1).join('_');
-      if(filter&&ders!==filter) return;
-      total++; if(val[s.no]==='var'||val[s.no]==='gec') present++;
-    });
-    homework.forEach(h=>{
-      if(filter&&h.ders!==filter) return;
-      hwTotal++; if(h.teslim[s.no]) hwDone++;
-    });
-    const attPct = total>0?Math.round(present/total*100):100;
-    return {s,attPct,hwDone,hwTotal};
-  }).sort((a,b)=>a.attPct-b.attPct);
-
-  document.getElementById('reportList').innerHTML = rows.map(r=>`
-    <div class="report-row">
-      <div class="report-name">${r.s.ad} ${r.s.soyad}<br><span class="sno">#${r.s.no}</span></div>
-      <div style="text-align:right;min-width:110px;">
-        <div style="font-size:11px;color:var(--gray);">Katılım: <b>${r.attPct}%</b></div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${r.attPct}%;background:${r.attPct>=85?'var(--success)':r.attPct>=70?'var(--warn)':'var(--danger)'}"></div></div>
-        <div style="font-size:11px;color:var(--gray);margin-top:4px;">Ödev: <b>${r.hwDone}/${r.hwTotal}</b></div>
-      </div>
-    </div>`).join('');
-}
-
-function renderSettings() {
-  document.getElementById('studentCount').textContent=`Toplam ${STUDENTS.length} öğrenci`;
-  document.getElementById('settingsStudentList').innerHTML=STUDENTS.map(s=>`
-    <div class="report-row"><div class="report-name">${s.ad} ${s.soyad}</div><span class="badge badge-gray">#${s.no}</span></div>`).join('');
-}
-
-function saveClassName() {
-  const v=document.getElementById('classNameInput').value.trim(); if(!v) return;
-  localStorage.setItem('cls',v); document.getElementById('classLabel').textContent=v;
-}
-
-function exportData() {
-  const blob=new Blob([JSON.stringify({attendance,homework,exported:new Date().toISOString()},null,2)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download=`ogretmen_takip_${today()}.json`; a.click();
-}
-
-function importData(e) {
-  const file=e.target.files[0]; if(!file) return;
-  const r=new FileReader();
-  r.onload=ev=>{ 
-    try { 
-      const d=JSON.parse(ev.target.result); 
-      if(d.attendance) attendance=d.attendance; 
-      if(d.homework) homework=d.homework; 
-      save(); 
-      alert('İçe aktarıldı!'); 
-      location.reload(); // Veriler gelince sayfayı yenile
-    } catch(err) { // Buraya err eklendi
-      alert('Geçersiz dosya!'); 
-    }
-  };
-  r.readAsText(file);
-}
-}
-
-function clearData() {
-  if(!confirm('Tüm veriler silinecek!')) return;
-  attendance={}; homework=[]; save(); alert('Silindi.');
-}
-
-// Service Worker kaydı
-if('serviceWorker' in navigator) {
-  window.addEventListener('load', ()=>navigator.serviceWorker.register('sw.js'));
-}
-</script>
-</body>
-</html>
+    const filter = document.getElementById('raporDers').value;
+    document.getElementById('statGrid').innerHTML = `
+        <div class="stat-box"><h3>${STUDENTS.length}</h3><small>Öğrenci</small></div>
+        <div class="stat-box"><h3>${homework.length}</h3><small>Ödev</small></div>`;
+    
+    document.getElementById('reportList').innerHTML = STUDENTS.map(s => {
+        let done = 0, total = 0;
+        homework.forEach(h => { if(!filter || h.ders === filter) { total++; if(h.teslim[s.no]) done++; } });
+        const pct = total > 0 ? Math.round((done/total)*100) : 0;
+        return `<div class="report-row">
+            <div style="flex:1">${s.ad} ${s.soyad}</div>
+            <div style="text-align:right">Ödev: ${done}/${total} (%${pct})<div class="progress-bar"><div class="progress-fill
