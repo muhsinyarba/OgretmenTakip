@@ -7,67 +7,82 @@
 <style>
   :root { --p: #2563eb; --s: #16a34a; --d: #ef4444; --w: #f59e0b; --g: #64748b; }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-  body { background: #f0f4ff; padding-bottom: 90px; }
-  header { background: var(--p); color: white; padding: 12px; text-align: center; }
-  .s-bar { background: #1e3a8a; color: white; padding: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
-  nav { display: flex; background: white; border-bottom: 2px solid #ddd; position: sticky; top: 0; z-index: 1000; overflow-x: auto; }
-  nav button { flex: 1; min-width: 75px; padding: 15px 5px; border: none; background: none; font-weight: bold; font-size: 11px; color: var(--g); cursor: pointer; }
-  nav button.active { color: var(--p); border-bottom: 3px solid var(--p); background: #f0f7ff; }
-  .page { display: none; padding: 12px; }
+  body { background: #f0f4ff; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+  
+  header { background: var(--p); color: white; padding: 12px; text-align: center; flex-shrink: 0; }
+  
+  .main-container { display: flex; flex: 1; overflow: hidden; }
+  
+  /* SOL MENÜ (SIDEBAR) */
+  nav { width: 80px; background: #1e3a8a; display: flex; flex-direction: column; flex-shrink: 0; }
+  nav button { padding: 15px 5px; border: none; background: none; color: white; font-size: 10px; cursor: pointer; border-bottom: 1px solid #2563eb; opacity: 0.7; }
+  nav button.active { background: var(--p); opacity: 1; border-left: 4px solid white; }
+  nav button i { display: block; font-size: 18px; margin-bottom: 5px; }
+
+  /* İÇERİK ALANI */
+  .content { flex: 1; overflow-y: auto; padding: 10px; padding-bottom: 30px; }
+  .page { display: none; }
   .page.active { display: block; }
-  .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-  h3 { font-size: 14px; margin-bottom: 10px; color: var(--p); border-bottom: 1px solid #eee; padding-bottom: 5px; }
-  .row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
-  .btn-s { padding: 8px 10px; border-radius: 6px; border: 1px solid #ddd; background: white; font-weight: bold; font-size: 10px; cursor: pointer; min-width: 35px; }
+
+  .s-bar { background: #0f172a; color: white; padding: 8px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
+  .card { background: white; border-radius: 8px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  h3 { font-size: 13px; margin-bottom: 10px; color: var(--p); border-bottom: 1px solid #eee; }
+  .row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 12px; }
+  
+  .btn-s { padding: 6px 8px; border-radius: 4px; border: 1px solid #ddd; background: white; font-weight: bold; font-size: 10px; }
   .btn-s.on { background: var(--p); color: white; border-color: var(--p); }
   .btn-s.half { background: var(--w); color: white; border-color: var(--w); }
   .btn-s.off { background: var(--d); color: white; border-color: var(--d); }
-  select, input, textarea { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px; }
-  .btn-m { width: 100%; padding: 14px; border-radius: 8px; border: none; background: var(--p); color: white; font-weight: bold; cursor: pointer; }
-  .save-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 12px; border-top: 1px solid #ddd; z-index: 1001; }
-  table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; }
-  th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+  
+  select, input, textarea { width: 100%; padding: 10px; margin-bottom: 8px; border-radius: 5px; border: 1px solid #cbd5e1; font-size: 13px; }
+  .btn-m { width: 100%; padding: 12px; border-radius: 6px; border: none; background: var(--p); color: white; font-weight: bold; cursor: pointer; }
 </style>
 </head>
 <body>
 
-<header><h2>Öğretmen Takip PRO</h2></header>
+<header><h4>Öğretmen Takip PRO</h4></header>
 
 <div class="s-bar">
-  <span>Sınıf: <b id="curDisplay">4-A</b></span>
-  <select id="clsSel" onchange="degisSınıf(this.value)" style="width:auto; margin:0; padding:2px; font-size:12px;"></select>
+  <span>Sınıf: <b id="curDisplay">...</b></span>
+  <select id="clsSel" onchange="degisSınıf(this.value)" style="width:auto; margin:0; padding:2px; font-size:10px;"></select>
 </div>
 
-<nav id="navbar">
-  <button onclick="tab('p1', this)" class="active">🚫 Yoklama</button>
-  <button onclick="tab('p2', this)">⭐ Katılım</button>
-  <button onclick="tab('p3', this)">📝 Ödev</button>
-  <button onclick="tab('p6', this)">🎤 Sözlü</button>
-  <button onclick="tab('p4', this)">📊 Rapor</button>
-  <button onclick="tab('p5', this)">⚙️ Ayar</button>
-</nav>
+<div class="main-container">
+  <nav id="sidebar">
+    <button onclick="tab('p1', this)" class="active">Yoklama</button>
+    <button onclick="tab('p2', this)">Katılım</button>
+    <button onclick="tab('p3', this)">Ödev</button>
+    <button onclick="tab('p6', this)">Sözlü</button>
+    <button onclick="tab('p4', this)">Rapor</button>
+    <button onclick="tab('p5', this)">Ayar</button>
+  </nav>
 
-<div id="p1" class="page active"><div class="card"><h3>Günlük Yoklama</h3><input type="date" id="t1" onchange="r()"><div id="l1"></div></div></div>
-<div id="p2" class="page"><div class="card"><h3>Derse Katılım</h3><select id="s2" onchange="r()"></select><input type="date" id="t2" onchange="r()"><div id="l2"></div></div></div>
-<div id="p3" class="page">
-  <div class="card"><h3>Ödev Takibi</h3><select id="s3" onchange="r()"></select><input type="date" id="t3" onchange="r()"><input type="text" id="oN" placeholder="Ödev Konusu" oninput="notKaydet('notes','oN','t3','s3')"><div id="l3"></div></div>
-  <div class="card" style="border:1px solid var(--d)"><h3>🔍 Eksik Ödev Tara</h3><button class="btn-m" style="background:var(--d)" onclick="tara()">Taramayı Başlat</button><div id="lSc" style="margin-top:10px"></div></div>
-</div>
-<div id="p6" class="page"><div class="card"><h3>Sözlü / Soru-Cevap</h3><select id="s6" onchange="r()"></select><input type="date" id="t6" onchange="r()"><input type="text" id="sN" placeholder="Sözlü Konusu (Örn: Simetri)" oninput="notKaydet('szNotes','sN','t6','s6')"><div id="l6"></div></div></div>
-<div id="p4" class="page"><div class="card"><h3>Genel Rapor</h3><div id="l4"></div></div></div>
-<div id="p5" class="page">
-    <div class="card"><h3>Sınıf Ekle/Güncelle</h3><input type="text" id="iCN" placeholder="Sınıf Adı"><textarea id="iCS" rows="5" placeholder="Öğrenci Listesi"></textarea><button class="btn-m" onclick="ekleSınıf()">Kaydet</button></div>
-    <div class="card"><h3>Ders Ayarı</h3><textarea id="iDS" rows="2"></textarea><button class="btn-m" style="background:#10b981" onclick="dersGuncelle()">Güncelle</button></div>
-    <div class="card"><button onclick="if(confirm('Sıfırlansın mı?')){localStorage.clear();location.reload();}" style="color:red; background:none; border:none; width:100%; font-size:11px;">⚠️ HAFIZAYI TAMAMEN TEMİZLE</button></div>
+  <div class="content">
+    <div id="p1" class="page active"><div class="card"><h3>Yoklama</h3><input type="date" id="t1" onchange="r()"><div id="l1"></div></div></div>
+    <div id="p2" class="page"><div class="card"><h3>Katılım</h3><select id="s2" onchange="r()"></select><input type="date" id="t2" onchange="r()"><div id="l2"></div></div></div>
+    <div id="p3" class="page">
+        <div class="card"><h3>Ödev Takibi</h3><select id="s3" onchange="r()"></select><input type="date" id="t3" onchange="r()"><input type="text" id="oN" placeholder="Ödev Konusu" oninput="nS('notes','oN','t3','s3')"><div id="l3"></div></div>
+        <div class="card"><button class="btn-m" style="background:var(--d)" onclick="tara()">Eksik Ödev Tara</button><div id="lSc" style="margin-top:10px; font-size:11px"></div></div>
+    </div>
+    <div id="p6" class="page"><div class="card"><h3>Sözlü</h3><select id="s6" onchange="r()"></select><input type="date" id="t6" onchange="r()"><input type="text" id="sN" placeholder="Sözlü Konusu" oninput="nS('szNotes','sN','t6','s6')"><div id="l6"></div></div></div>
+    <div id="p4" class="page"><div class="card"><h3>Rapor</h3><div id="l4"></div></div></div>
+    <div id="p5" class="page">
+        <div class="card"><h3>Sınıf Ekle</h3><input type="text" id="iCN" placeholder="Ad"><textarea id="iCS" rows="4" placeholder="Öğrenciler"></textarea><button class="btn-m" onclick="ekleSınıf()">Kaydet</button></div>
+        <div class="card"><h3>Ders Ayarı</h3><textarea id="iDS" rows="2"></textarea><button class="btn-m" onclick="dersGuncelle()">Güncelle</button></div>
+        <div class="card"><button onclick="localStorage.clear();location.reload();" style="color:red; border:none; background:none; width:100%; font-size:11px;">⚠️ HAFIZAYI SIFIRLA</button></div>
+    </div>
+  </div>
 </div>
 
-<div class="save-bar"><button class="btn-m" onclick="verileriKaydet()">💾 TÜMÜNÜ KAYDET</button></div>
+<div style="position:fixed; bottom:0; left:0; width:100%; padding:10px; background:white; border-top:1px solid #ddd; z-index:1001;">
+  <button class="btn-m" onclick="kaydet()">💾 TÜMÜNÜ KAYDET</button>
+</div>
 
 <script>
 const defO = ["Ali Ömer ARSLAN","Arda ARSLAN","Ayşe ŞINIK","Barış HALLUM","Beyazıt GÖRKEN","Bilgesu TOPRAK","Bora ALAS","Defne KAYNAR","Derin URAZ","Elif ÇİTKAP","Emir Efe ALPER","Esra DEMİRLİ","Eymen HALICI","Hüma ALTINIŞIK","İpek ELDEK","Irmak ERDEM","Kumsal GÜNDOĞARKEN","Melis KILIÇ","Mert BALCIOĞLU","Musa KARAÖZ","Mustafa DAL","Naz AKGÜN","Nisa YALILAR","Onuralp TOK","Önder TURĞAY","Poyraz SEZGİN","Roza AYDIN","Rüzgar GÜL","Yaz YILMAZ","Yusuf BİRLİK"];
 const defD = ["Türkçe","Matematik","Fen","Sosyal","İngilizce"];
 
-let st = JSON.parse(localStorage.getItem('brans_final_v10')) || {
+let st = JSON.parse(localStorage.getItem('brans_v12')) || {
     cls: {"4-A": defO}, cur: "4-A", ders: defD,
     db: {v:{}, k:{}, od:{}, notes:{}, sz:{}, szNotes:{}}
 };
@@ -75,18 +90,17 @@ let st = JSON.parse(localStorage.getItem('brans_final_v10')) || {
 function tab(id, btn) {
     var pgs = document.getElementsByClassName('page');
     for (var i = 0; i < pgs.length; i++) { pgs[i].style.display = 'none'; }
-    var btns = document.querySelectorAll('#navbar button');
+    var btns = document.querySelectorAll('#sidebar button');
     for (var j = 0; j < btns.length; j++) { btns[j].classList.remove('active'); }
     document.getElementById(id).style.display = 'block';
     btn.classList.add('active');
     if(id==='p4') rRap();
 }
 
-function degisSınıf(v) { st.cur = v; save(); location.reload(); }
-function save() { localStorage.setItem('brans_final_v10', JSON.stringify(st)); }
-function verileriKaydet() { save(); alert("Kaydedildi!"); }
+function degisSınıf(v) { st.cur = v; localStorage.setItem('brans_v12', JSON.stringify(st)); location.reload(); }
+function kaydet() { localStorage.setItem('brans_v12', JSON.stringify(st)); alert("Kaydedildi!"); }
 
-function notKaydet(f, i, t, s) {
+function nS(f, i, t, s) {
     const key = document.getElementById(t).value + "_" + document.getElementById(s).value + "_" + st.cur;
     st.db[f][key] = document.getElementById(i).value;
 }
@@ -99,20 +113,14 @@ function r() {
     const vK = tV + "_" + st.cur; const vD = st.db.v[vK] || {};
     document.getElementById('l1').innerHTML = oL.map(s => `<div class="row"><span>${s}</span><div><button class="btn-s ${vD[s]==='y'?'':'on'}" onclick="u('v','${vK}','${s}','v')">VAR</button><button class="btn-s ${vD[s]==='y'?'on':''}" onclick="u('v','${vK}','${s}','y')">YOK</button></div></div>`).join('');
 
-    // Katılım
-    if(dK) {
-        const kK = tK+"_"+dK+"_"+st.cur; const kD = st.db.k[kK] || {};
-        document.getElementById('l2').innerHTML = oL.map(s => `<div class="row"><span>${s}</span><button class="btn-s ${kD[s]?'on':''}" onclick="u('k','${kK}','${s}',${!kD[s]})">${kD[s]?'⭐':'PAS'}</button></div>`).join('');
-    }
-    // Ödev
-    if(dO) {
-        const oK = tO+"_"+dO+"_"+st.cur; const oD = st.db.od[oK] || {};
+    if(dK) { const kK = tK+"_"+dK+"_"+st.cur, kD = st.db.k[kK] || {}; document.getElementById('l2').innerHTML = oL.map(s => `<div class="row"><span>${s}</span><button class="btn-s ${kD[s]?'on':''}" onclick="u('k','${kK}','${s}',${!kD[s]})">${kD[s]?'⭐':'PAS'}</button></div>`).join(''); }
+    if(dO) { 
+        const oK = tO+"_"+dO+"_"+st.cur, oD = st.db.od[oK] || {}; 
         document.getElementById('l3').innerHTML = oL.map(s => `<div class="row"><span>${s}</span><button class="btn-s ${oD[s]?'on':''}" onclick="u('od','${oK}','${s}',${!oD[s]})">${oD[s]?'✅':'YOK'}</button></div>`).join('');
         document.getElementById('oN').value = st.db.notes[oK] || "";
     }
-    // Sözlü
     if(dS) {
-        const sK = tS+"_"+dS+"_"+st.cur; const sD = st.db.sz[sK] || {};
+        const sK = tS+"_"+dS+"_"+st.cur, sD = st.db.sz[sK] || {};
         document.getElementById('l6').innerHTML = oL.map(s => `<div class="row"><span>${s}</span><div><button class="btn-s ${sD[s]==='p'?'on':''}" onclick="u('sz','${sK}','${s}','p')">+</button><button class="btn-s ${sD[s]==='h'?'half':''}" onclick="u('sz','${sK}','${s}','h')">+/-</button><button class="btn-s ${sD[s]==='e'?'off':''}" onclick="u('sz','${sK}','${s}','e')">-</button></div></div>`).join('');
         document.getElementById('sN').value = st.db.szNotes[sK] || "";
     }
@@ -137,5 +145,38 @@ function rRap() {
 function ekleSınıf() {
     const n = document.getElementById('iCN').value.trim();
     const s = document.getElementById('iCS').value.split('\n').filter(x=>x.trim()!=="").sort((a,b)=>a.localeCompare(b,'tr'));
-    if(!n || s.length===0) return alert("Eksik bilgi!");
-    st.cls[n] = s; st.cur = n; save();
+    if(!n || s.length===0) return alert("Hata!");
+    st.cls[n] = s; st.cur = n; localStorage.setItem('brans_v12', JSON.stringify(st)); location.reload();
+}
+function dersGuncelle() { st.ders = document.getElementById('iDS').value.split(',').map(x=>x.trim()); localStorage.setItem('brans_v12', JSON.stringify(st)); location.reload(); }
+
+function tara() {
+    const oL = st.cls[st.cur]; let h = "";
+    oL.forEach(s => {
+        let e = [];
+        Object.keys(st.db.od).forEach(k => { if(k.endsWith(st.cur) && st.db.od[k][s] === false) e.push(k.split('_')[0] + " " + k.split('_')[1]); });
+        if(e.length > 0) h += `<div style="margin-bottom:5px"><b>${s}</b>: ${e.join(', ')}</div>`;
+    });
+    document.getElementById('lSc').innerHTML = h || "Eksik yok.";
+}
+
+window.onload = function() {
+    const t = new Date().toISOString().split('T')[0];
+    ['t1','t2','t3','t6'].forEach(id => document.getElementById(id).value = t);
+    const sel = document.getElementById('clsSel');
+    Object.keys(st.cls).forEach(c => {
+        const o = document.createElement('option'); o.value = c; o.text = c;
+        if(c === st.cur) o.selected = true;
+        sel.add(o);
+    });
+    let opt = '<option value="">-- Ders --</option>' + st.ders.map(d => `<option value="${d}">${d}</option>`).join('');
+    ['s2','s3','s6'].forEach(id => document.getElementById(id).innerHTML = opt);
+    document.getElementById('curDisplay').innerText = st.cur;
+    document.getElementById('iCN').value = st.cur;
+    document.getElementById('iCS').value = st.cls[st.cur].join('\n');
+    document.getElementById('iDS').value = st.ders.join(', ');
+    r();
+};
+</script>
+</body>
+</html>
