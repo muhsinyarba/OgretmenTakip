@@ -1,28 +1,101 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Öğretmen Takip - Full Pro</title>
+<link rel="manifest" href="manifest.json">
+<style>
+  :root { --primary: #2563eb; --success: #16a34a; --danger: #dc2626; --warn: #d97706; --gray: #6b7280; --border: #e5e7eb; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: sans-serif; background: #f0f4ff; color: #111827; padding-bottom: 100px; }
+  header { background: var(--primary); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 1000; }
+  nav { display: flex; background: white; border-bottom: 1px solid var(--border); position: sticky; top: 55px; z-index: 999; overflow-x: auto; }
+  nav button { flex: 1; min-width: 90px; padding: 12px 5px; border: none; background: none; font-weight: bold; cursor: pointer; color: var(--gray); border-bottom: 3px solid transparent; font-size: 11px; }
+  nav button.active { color: var(--primary); border-bottom-color: var(--primary); background: #f0f7ff; }
+  .page { display: none; padding: 12px; }
+  .page.active { display: block; }
+  .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  h3 { font-size: 14px; margin-bottom: 10px; color: var(--primary); border-bottom: 1px solid #eee; padding-bottom: 5px; }
+  .student-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f5f5f5; font-size: 13px; }
+  .btn-group { display: flex; gap: 4px; }
+  .btn-opt { padding: 8px 10px; border-radius: 6px; border: 1px solid #ddd; background: white; font-weight: bold; cursor: pointer; font-size: 11px; min-width: 45px; }
+  .btn-opt.active { background: var(--primary); color: white; border-color: var(--primary); }
+  select, input { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ddd; }
+  .save-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 12px; border-top: 1px solid #ddd; z-index: 1001; }
+  .btn-main { width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; }
+  th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+  th { background: #f8fafc; }
+  @media print { nav, .save-bar, header { display: none; } .page { display: block; } }
+</style>
+</head>
+<body>
+
+<header><h2 id="clsTitle">Öğretmen Takip</h2></header>
+
+<nav>
+  <button class="active" onclick="git('devamsizlik', this)">🚫 Devamsızlık</button>
+  <button onclick="git('katilim', this)">⭐ Katılım</button>
+  <button onclick="git('odev', this)">📝 Ödev</button>
+  <button onclick="git('rapor', this)">📊 Rapor</button>
+  <button onclick="git('ayarlar', this)">⚙️ Ayarlar</button>
+</nav>
+
+<div id="devamsizlik" class="page active">
+  <div class="card">
+    <h3>🚫 Günlük Yoklama</h3>
+    <input type="date" id="dateDev" onchange="renderDev()">
+    <div id="listDev"></div>
+  </div>
+</div>
+
+<div id="katilim" class="page">
+  <div class="card">
+    <h3>⭐ Derse Katılım</h3>
+    <select id="selKatDers" onchange="renderKat()"></select>
+    <input type="date" id="dateKat" onchange="renderKat()">
+    <div id="listKat">Ders seçiniz...</div>
+  </div>
+</div>
+
+<div id="odev" class="page">
+  <div class="card">
+    <h3>📝 Ödev Takibi</h3>
+    <select id="selOdevDers" onchange="renderOdev()"></select>
+    <input type="date" id="dateOdev" onchange="renderOdev()">
+    <div id="listOdev">Ders seçiniz...</div>
+  </div>
+</div>
+
 <div id="rapor" class="page">
   <div class="card">
-    <h3>📊 Detaylı Analiz</h3>
+    <h3>📊 Detaylı Raporlar</h3>
     <select id="raporTur" onchange="renderRapor()">
-      <option value="genel">Genel Sınıf Özeti</option>
-      <option value="ogrenci">Öğrenci Bazlı Detay</option>
-      <option value="ders">Ders Bazlı Detay</option>
+      <option value="genel">Sınıf Genel Özeti</option>
+      <option value="ders">Ders Bazlı Analiz</option>
     </select>
-    <div id="raporFiltrele"></div>
-    <div id="listRapor" style="margin-top:15px; overflow-x:auto;"></div>
-    
-    <div style="display:flex; gap:10px; margin-top:20px;">
-      <button class="btn-main" style="background:#059669;" onclick="exportExcel()">📥 Excel İndir</button>
-      <button class="btn-main" style="background:#dc2626;" onclick="window.print()">🖨️ PDF / Yazdır</button>
+    <div id="listRapor"></div>
+    <div style="display:flex; gap:10px; margin-top:15px;">
+      <button class="btn-main" style="background:#059669; font-size:12px;" onclick="exportExcel()">📥 Excel</button>
+      <button class="btn-main" style="background:#dc2626; font-size:12px;" onclick="window.print()">🖨️ PDF / Yazdır</button>
     </div>
   </div>
 </div>
 
-<script>
-// Harici kütüphaneleri dinamik olarak ekliyoruz (Excel için)
-const script = document.createElement('script');
-script.src = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
-document.head.appendChild(script);
+<div id="ayarlar" class="page">
+  <div class="card">
+    <h3>⚙️ Ayarlar</h3>
+    <input type="text" id="inpCls" placeholder="Sınıf Adı (Örn: 4-A)">
+    <button class="btn-main" onclick="saveClsName()">Kaydet</button>
+    <button onclick="fullClear()" style="width:100%; margin-top:20px; color:red; border:1px solid red; background:none; padding:10px; border-radius:8px; cursor:pointer;">Tüm Verileri Sıfırla</button>
+  </div>
+</div>
 
-// Alfabetik Soyadlı Liste
+<div class="save-bar"><button class="btn-main" onclick="masterSave()">💾 Değişiklikleri Kaydet</button></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
 const STUDENTS = [
   {no:668,ad:"Ali Ömer",soyad:"ARSLAN"},{no:309,ad:"Arda",soyad:"ARSLAN"},{no:614,ad:"Ayşe",soyad:"ŞINIK"},
   {no:619,ad:"Barış",soyad:"HALLUM"},{no:485,ad:"Beyazıt",soyad:"GÖRKEN"},{no:318,ad:"Bilgesu",soyad:"TOPRAK"},
@@ -37,62 +110,105 @@ const STUDENTS = [
 ].sort((a,b) => a.ad.localeCompare(b.ad, 'tr'));
 
 const DERSLER = ["Türkçe","Matematik","Fen Bilimleri","Sosyal Bilgiler","İngilizce"];
-let db = JSON.parse(localStorage.getItem('edu_master_final') || '{"dev":{}, "kat":{}, "odev":{}}');
+let db = JSON.parse(localStorage.getItem('edu_master_v5') || '{"dev":{}, "kat":{}, "odev":{}}');
+
+window.git = function(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+    if(id === 'rapor') renderRapor();
+};
+
+window.renderDev = function() {
+    const t = document.getElementById('dateDev').value;
+    const cont = document.getElementById('listDev');
+    const data = db.dev[t] || {};
+    cont.innerHTML = STUDENTS.map(s => `<div class="student-row"><span>${s.ad} ${s.soyad}</span><div class="btn-group">
+        <button class="btn-opt ${data[s.no]==='yok'?'':'active'}" onclick="upd('dev','${t}',${s.no},'var')">VAR</button>
+        <button class="btn-opt ${data[s.no]==='yok'?'active':''}" onclick="upd('dev','${t}',${s.no},'yok')">YOK</button>
+    </div></div>`).join('');
+};
+
+window.renderKat = function() {
+    const d = document.getElementById('selKatDers').value;
+    const t = document.getElementById('dateKat').value;
+    const cont = document.getElementById('listKat');
+    if(!d) { cont.innerHTML = "Ders seçiniz."; return; }
+    const key = t + "_" + d;
+    const data = db.kat[key] || {};
+    cont.innerHTML = STUDENTS.map(s => `<div class="student-row"><span>${s.ad} ${s.soyad}</span>
+        <button class="btn-opt ${data[s.no]?'active':''}" onclick="upd('kat','${key}',${s.no},${!data[s.no]})">${data[s.no]?'⭐':'PASİF'}</button>
+    </div>`).join('');
+};
+
+window.renderOdev = function() {
+    const d = document.getElementById('selOdevDers').value;
+    const t = document.getElementById('dateOdev').value;
+    const cont = document.getElementById('listOdev');
+    if(!d) { cont.innerHTML = "Ders seçiniz."; return; }
+    const key = t + "_" + d;
+    const data = db.odev[key] || {};
+    cont.innerHTML = STUDENTS.map(s => `<div class="student-row"><span>${s.ad} ${s.soyad}</span>
+        <button class="btn-opt ${data[s.no]?'active':''}" onclick="upd('odev','${key}',${s.no},${!data[s.no]})">${data[s.no]?'✅':'YOK'}</button>
+    </div>`).join('');
+};
+
+window.upd = function(t, k, n, v) { if(!db[t][k]) db[t][k] = {}; db[t][k][n] = v; renderDev(); renderKat(); renderOdev(); };
+
+window.masterSave = function() { localStorage.setItem('edu_master_v5', JSON.stringify(db)); alert("Kaydedildi!"); };
 
 window.renderRapor = function() {
     const tur = document.getElementById('raporTur').value;
     const cont = document.getElementById('listRapor');
-    let html = "";
-
-    if (tur === 'genel') {
-        html = `<table border="1" style="width:100%; border-collapse:collapse; font-size:12px;">
-            <tr style="background:#eee;"><th>Öğrenci</th><th>Devamsızlık</th><th>Yıldız</th><th>Ödev</th></tr>`;
+    let html = "<table><thead><tr><th>Öğrenci</th>";
+    
+    if(tur === 'genel') {
+        html += "<th>YOK</th><th>⭐</th><th>✅</th></tr></thead><tbody>";
         STUDENTS.forEach(s => {
-            let yok = 0, yildiz = 0, odev = 0;
-            Object.values(db.dev).forEach(d => { if(d[s.no]==='yok') yok++; });
-            Object.values(db.kat).forEach(l => { if(l[s.no]) yildiz++; });
-            Object.values(db.odev).forEach(l => { if(l[s.no]) odev++; });
-            html += `<tr><td>${s.ad} ${s.soyad}</td><td align="center">${yok}</td><td align="center">${yildiz}</td><td align="center">${odev}</td></tr>`;
+            let y=0, k=0, o=0;
+            Object.values(db.dev).forEach(d => { if(d[s.no]==='yok') y++; });
+            Object.values(db.kat).forEach(l => { if(l[s.no]) k++; });
+            Object.values(db.odev).forEach(l => { if(l[s.no]) o++; });
+            html += `<tr><td>${s.ad} ${s.soyad}</td><td>${y}</td><td>${k}</td><td>${o}</td></tr>`;
         });
-        html += "</table>";
-    } else if (tur === 'ogrenci') {
-        html = "<p style='font-size:11px; color:gray;'>Her öğrencinin tüm derslerdeki başarı yüzdesi listelenir.</p>";
-        STUDENTS.forEach(s => {
-            let dersKatilim = 0, toplamDers = Object.keys(db.kat).length;
-            Object.values(db.kat).forEach(l => { if(l[s.no]) dersKatilim++; });
-            let yuzde = toplamDers > 0 ? Math.round((dersKatilim / toplamDers) * 100) : 0;
-            html += `<div class="student-row"><b>${s.ad} ${s.soyad}</b> <span>Akademik Katılım: %${yuzde}</span></div>`;
-        });
-    } else if (tur === 'ders') {
-        html = "<table border='1' style='width:100%; border-collapse:collapse; font-size:12px;'><tr style='background:#eee;'><th>Ders</th><th>Ort. Katılım</th><th>Ödev Tamamlama</th></tr>";
+    } else {
+        html += "<th>Ders</th><th>Durum</th></tr></thead><tbody>";
         DERSLER.forEach(d => {
-            let dKat = 0, dOdev = 0, dSayisi = 0;
-            Object.entries(db.kat).forEach(([key, val]) => { if(key.includes(d)) { dSayisi++; Object.values(val).forEach(v => { if(v) dKat++; }); } });
-            Object.entries(db.odev).forEach(([key, val]) => { if(key.includes(d)) { Object.values(val).forEach(v => { if(v) dOdev++; }); } });
-            let katOrt = dSayisi > 0 ? Math.round(dKat / (dSayisi * 30) * 100) : 0;
-            html += `<tr><td>${d}</td><td align="center">%${katOrt}</td><td align="center">${dOdev} Toplam</td></tr>`;
+            let count = 0;
+            Object.entries(db.kat).forEach(([key, val]) => { if(key.includes(d)) Object.values(val).forEach(v => { if(v) count++; }); });
+            html += `<tr><td>Sınıf Geneli</td><td>${d}</td><td>${count} Toplam Yıldız</td></tr>`;
         });
-        html += "</table>";
     }
-    cont.innerHTML = html;
+    cont.innerHTML = html + "</tbody></table>";
 };
 
-// Excel Dışa Aktarma Fonksiyonu
 window.exportExcel = function() {
-    const tur = document.getElementById('raporTur').value;
-    let data = [];
-    if(tur === 'genel') {
-        data = STUDENTS.map(s => {
-            let yok = 0, yildiz = 0, odev = 0;
-            Object.values(db.dev).forEach(d => { if(d[s.no]==='yok') yok++; });
-            Object.values(db.kat).forEach(l => { if(l[s.no]) yildiz++; });
-            Object.values(db.odev).forEach(l => { if(l[s.no]) odev++; });
-            return {"Öğrenci": `${s.ad} ${s.soyad}`, "Devamsızlık": yok, "Yıldız": yildiz, "Ödev": odev};
-        });
-    }
+    const data = STUDENTS.map(s => {
+        let y=0, k=0, o=0;
+        Object.values(db.dev).forEach(d => { if(d[s.no]==='yok') y++; });
+        Object.values(db.kat).forEach(l => { if(l[s.no]) k++; });
+        Object.values(db.odev).forEach(l => { if(l[s.no]) o++; });
+        return {"Ad Soyad": `${s.ad} ${s.soyad}`, "Devamsızlık": y, "Katılım (Yıldız)": k, "Ödev": o};
+    });
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Rapor");
-    XLSX.writeFile(wb, `Ogretmen_Takip_Rapor_${new Date().toLocaleDateString()}.xlsx`);
+    XLSX.writeFile(wb, "Ogretmen_Takip_Rapor.xlsx");
 };
+
+window.saveClsName = function() { localStorage.setItem('cls_v5', document.getElementById('inpCls').value); location.reload(); };
+window.fullClear = function() { if(confirm("SİLİNSİN Mİ?")) { localStorage.clear(); location.reload(); } };
+
+document.addEventListener('DOMContentLoaded', () => {
+    const t = new Date().toISOString().split('T')[0];
+    ['dateDev','dateKat','dateOdev'].forEach(id => document.getElementById(id).value = t);
+    let opts = '<option value="">-- Seç --</option>' + DERSLER.map(d => `<option value="${d}">${d}</option>`).join('');
+    ['selKatDers','selOdevDers'].forEach(id => document.getElementById(id).innerHTML = opts);
+    const saved = localStorage.getItem('cls_v5');
+    if(saved) document.getElementById('clsTitle').innerText = saved;
+    renderDev();
+});
 </script>
+</body>
+</html>
