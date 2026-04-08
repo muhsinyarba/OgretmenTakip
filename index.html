@@ -1,47 +1,70 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Öğretmen Takip - Nihai</title>
-<style>
-  :root { --p: #2563eb; --g: #6b7280; --b: #e5e7eb; }
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-  body { background: #f0f4ff; padding-bottom: 80px; }
-  header { background: var(--p); color: white; padding: 15px; text-align: center; }
-  nav { display: flex; background: white; border-bottom: 1px solid var(--b); position: sticky; top: 0; z-index: 100; }
-  nav button { flex: 1; padding: 15px 5px; border: none; background: none; font-weight: bold; font-size: 11px; color: var(--g); border-bottom: 3px solid transparent; }
-  nav button.active { color: var(--p); border-bottom-color: var(--p); }
-  .page { display: none; padding: 10px; }
-  .page.active { display: block; }
-  .card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-  .row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 13px; }
-  .btn-s { padding: 6px 10px; border-radius: 5px; border: 1px solid #ddd; background: white; font-weight: bold; font-size: 11px; }
-  .btn-s.on { background: var(--p); color: white; border-color: var(--p); }
-  select, input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ddd; }
-  .save-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 10px; border-top: 1px solid #ddd; }
-  .btn-m { width: 100%; padding: 12px; border-radius: 5px; border: none; background: var(--p); color: white; font-weight: bold; }
-  .hist { background: #fff5f5; padding: 8px; border-radius: 5px; font-size: 11px; margin-top: 5px; color: #c53030; line-height: 1.4; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Öğretmen Takip</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; background: #f0f4ff; }
+        .nav { display: flex; background: #fff; border-bottom: 2px solid #2563eb; position: sticky; top:0; }
+        .nav button { flex: 1; padding: 15px 5px; border: none; background: none; font-weight: bold; cursor: pointer; }
+        .nav button.active { background: #2563eb; color: #fff; }
+        .page { display: none; padding: 20px; }
+        .page.active { display: block; }
+        .card { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    </style>
 </head>
 <body>
 
-<header><h2 id="headT">Öğretmen Takip</h2></header>
-
-<nav id="mNav">
-  <button class="active" onclick="pg('dev')">🚫 Yoklama</button>
-  <button onclick="pg('kat')">⭐ Katılım</button>
-  <button onclick="pg('odev')">📝 Ödev</button>
-  <button onclick="pg('rap')">📊 Rapor</button>
-  <button onclick="pg('set')">⚙️ Ayar</button>
-</nav>
-
-<div id="dev" class="page active"><div class="card"><h3>Yoklama</h3><input type="date" id="dDev" onchange="rDev()"><div id="lDev"></div></div></div>
-<div id="kat" class="page"><div class="card"><h3>Katılım</h3><select id="sK" onchange="rKat()"></select><input type="date" id="dKat" onchange="rKat()"><div id="lKat"></div></div></div>
-<div id="odev" class="page">
-    <div class="card"><h3>Ödev Girişi</h3><select id="sO" onchange="rOdev()"></select><input type="date" id="dO" onchange="rOdev()"><div id="lOdev"></div></div>
-    <div class="card" style="border: 2px solid red;"><h3>Geçmiş Ödev Sorgu</h3><select id="sSor" onchange="fSor()"></select><div id="resSor"></div></div>
+<div class="nav">
+    <button onclick="ac('p1', this)" class="active">Yoklama</button>
+    <button onclick="ac('p2', this)">Katılım</button>
+    <button onclick="ac('p3', this)">Ödev</button>
+    <button onclick="ac('p4', this)">Ayarlar</button>
 </div>
-<div id="rap" class="page"><div class="card"><h3>Genel Rapor</h3><div id="lRap"></div></div></div>
-<div id="set" class="page">
-    <div class="card"><h3>Sınıf & Ders</h3><input type="text" id="iCls"><textarea id="iDer" rows="2"></textarea><button class="btn-m
+
+<div id="p1" class="page active">
+    <div class="card"><h3>Yoklama</h3><p>Liste yükleniyor...</p></div>
+</div>
+
+<div id="p2" class="page">
+    <div class="card"><h3>Katılım</h3><p>Ders seçiniz.</p></div>
+</div>
+
+<div id="p3" class="page">
+    <div class="card"><h3>Ödev</h3><p>Ödev listesi.</p></div>
+</div>
+
+<div id="p4" class="page">
+    <div class="card">
+        <h3>Ayarlar</h3>
+        <button onclick="temizle()" style="background:red; color:white; padding:10px; border:none; width:100%;">HAFIZAYI ZORLA SİL</button>
+    </div>
+</div>
+
+<script>
+    function ac(id, btn) {
+        // Tüm sayfaları gizle
+        var sayfalar = document.getElementsByClassName('page');
+        for (var i = 0; i < sayfalar.length; i++) {
+            sayfalar[i].style.display = 'none';
+        }
+        // Tüm butonların aktifliğini kaldır
+        var butonlar = document.querySelectorAll('.nav button');
+        for (var j = 0; j < butonlar.length; j++) {
+            butonlar[j].classList.remove('active');
+        }
+        // Seçilen sayfayı göster ve butonu aktif yap
+        document.getElementById(id).style.display = 'block';
+        btn.classList.add('active');
+    }
+
+    function temizle() {
+        if(confirm("Tüm veriler silinecek ve uygulama sıfırlanacak?")) {
+            localStorage.clear();
+            location.reload(true);
+        }
+    }
+</script>
+</body>
+</html>
