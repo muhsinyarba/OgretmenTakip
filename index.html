@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Öğretmen Takip - Full Pro</title>
+<title>Öğretmen Takip - Dinamik Sürüm</title>
 <link rel="manifest" href="manifest.json">
 <style>
-  :root { --primary: #2563eb; --success: #16a34a; --danger: #dc2626; --warn: #d97706; --gray: #6b7280; --border: #e5e7eb; }
+  :root { --primary: #2563eb; --success: #16a34a; --danger: #dc2626; --gray: #6b7280; --border: #e5e7eb; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: sans-serif; background: #f0f4ff; color: #111827; padding-bottom: 100px; }
   header { background: var(--primary); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 1000; }
   nav { display: flex; background: white; border-bottom: 1px solid var(--border); position: sticky; top: 55px; z-index: 999; overflow-x: auto; }
-  nav button { flex: 1; min-width: 90px; padding: 12px 5px; border: none; background: none; font-weight: bold; cursor: pointer; color: var(--gray); border-bottom: 3px solid transparent; font-size: 11px; }
+  nav button { flex: 1; min-width: 80px; padding: 12px 5px; border: none; background: none; font-weight: bold; cursor: pointer; color: var(--gray); border-bottom: 3px solid transparent; font-size: 11px; }
   nav button.active { color: var(--primary); border-bottom-color: var(--primary); background: #f0f7ff; }
   .page { display: none; padding: 12px; }
   .page.active { display: block; }
@@ -19,15 +19,14 @@
   h3 { font-size: 14px; margin-bottom: 10px; color: var(--primary); border-bottom: 1px solid #eee; padding-bottom: 5px; }
   .student-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f5f5f5; font-size: 13px; }
   .btn-group { display: flex; gap: 4px; }
-  .btn-opt { padding: 8px 10px; border-radius: 6px; border: 1px solid #ddd; background: white; font-weight: bold; cursor: pointer; font-size: 11px; min-width: 45px; }
+  .btn-opt { padding: 8px 10px; border-radius: 6px; border: 1px solid #ddd; background: white; font-weight: bold; cursor: pointer; font-size: 11px; }
   .btn-opt.active { background: var(--primary); color: white; border-color: var(--primary); }
-  select, input { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ddd; }
+  select, input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ddd; font-family: inherit; }
   .save-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 12px; border-top: 1px solid #ddd; z-index: 1001; }
-  .btn-main { width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; }
-  table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; }
+  .btn-main { width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; margin-top: 5px; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; }
   th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-  th { background: #f8fafc; }
-  @media print { nav, .save-bar, header { display: none; } .page { display: block; } }
+  .tag { display: inline-block; background: #eee; padding: 4px 8px; border-radius: 4px; margin: 2px; font-size: 11px; }
 </style>
 </head>
 <body>
@@ -35,11 +34,11 @@
 <header><h2 id="clsTitle">Öğretmen Takip</h2></header>
 
 <nav>
-  <button class="active" onclick="git('devamsizlik', this)">🚫 Devamsızlık</button>
+  <button class="active" onclick="git('devamsizlik', this)">🚫 Yoklama</button>
   <button onclick="git('katilim', this)">⭐ Katılım</button>
   <button onclick="git('odev', this)">📝 Ödev</button>
   <button onclick="git('rapor', this)">📊 Rapor</button>
-  <button onclick="git('ayarlar', this)">⚙️ Ayarlar</button>
+  <button onclick="git('ayarlar', this)">⚙️ Yönetim</button>
 </nav>
 
 <div id="devamsizlik" class="page active">
@@ -55,7 +54,7 @@
     <h3>⭐ Derse Katılım</h3>
     <select id="selKatDers" onchange="renderKat()"></select>
     <input type="date" id="dateKat" onchange="renderKat()">
-    <div id="listKat">Ders seçiniz...</div>
+    <div id="listKat"></div>
   </div>
 </div>
 
@@ -64,53 +63,59 @@
     <h3>📝 Ödev Takibi</h3>
     <select id="selOdevDers" onchange="renderOdev()"></select>
     <input type="date" id="dateOdev" onchange="renderOdev()">
-    <div id="listOdev">Ders seçiniz...</div>
+    <div id="listOdev"></div>
   </div>
 </div>
 
 <div id="rapor" class="page">
   <div class="card">
-    <h3>📊 Detaylı Raporlar</h3>
-    <select id="raporTur" onchange="renderRapor()">
-      <option value="genel">Sınıf Genel Özeti</option>
-      <option value="ders">Ders Bazlı Analiz</option>
-    </select>
-    <div id="listRapor"></div>
-    <div style="display:flex; gap:10px; margin-top:15px;">
-      <button class="btn-main" style="background:#059669; font-size:12px;" onclick="exportExcel()">📥 Excel</button>
-      <button class="btn-main" style="background:#dc2626; font-size:12px;" onclick="window.print()">🖨️ PDF / Yazdır</button>
-    </div>
+    <h3>📊 Raporlar</h3>
+    <button class="btn-main" style="background:#059669; margin-bottom:10px;" onclick="exportExcel()">📥 Excel İndir</button>
+    <div id="listRapor" style="overflow-x:auto;"></div>
   </div>
 </div>
 
 <div id="ayarlar" class="page">
   <div class="card">
-    <h3>⚙️ Ayarlar</h3>
-    <input type="text" id="inpCls" placeholder="Sınıf Adı (Örn: 4-A)">
-    <button class="btn-main" onclick="saveClsName()">Kaydet</button>
-    <button onclick="fullClear()" style="width:100%; margin-top:20px; color:red; border:1px solid red; background:none; padding:10px; border-radius:8px; cursor:pointer;">Tüm Verileri Sıfırla</button>
+    <h3>🏫 Sınıf Ayarları</h3>
+    <input type="text" id="inpCls" placeholder="Sınıf İsmi">
+    <button class="btn-main" onclick="saveConfig()">Sınıf Adını Güncelle</button>
+  </div>
+  
+  <div class="card">
+    <h3>📚 Ders Yönetimi</h3>
+    <p style="font-size:11px; color:gray; margin-bottom:5px;">Dersleri virgülle ayırarak yazın:</p>
+    <textarea id="inpDersler" rows="2"></textarea>
+    <button class="btn-main" onclick="saveDersler()">Ders Listesini Güncelle</button>
+  </div>
+
+  <div class="card">
+    <h3>👥 Öğrenci Listesi Yükle</h3>
+    <p style="font-size:11px; color:gray; margin-bottom:5px;">Her satıra bir isim gelecek şekilde yapıştırın:</p>
+    <textarea id="inpOgrenciler" rows="10" placeholder="Ali Ömer ARSLAN&#10;Arda ARSLAN..."></textarea>
+    <button class="btn-main" style="background:#8b5cf6;" onclick="saveOgrenciler()">Listeyi Kaydet ve Sırala</button>
+  </div>
+
+  <div class="card">
+    <button onclick="fullClear()" style="width:100%; color:red; border:1px solid red; background:none; padding:10px; border-radius:8px; cursor:pointer;">⚠️ Tüm Verileri Sıfırla</button>
   </div>
 </div>
 
-<div class="save-bar"><button class="btn-main" onclick="masterSave()">💾 Değişiklikleri Kaydet</button></div>
+<div class="save-bar"><button class="btn-main" onclick="masterSave()">💾 TÜMÜNÜ KAYDET</button></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-const STUDENTS = [
-  {no:668,ad:"Ali Ömer",soyad:"ARSLAN"},{no:309,ad:"Arda",soyad:"ARSLAN"},{no:614,ad:"Ayşe",soyad:"ŞINIK"},
-  {no:619,ad:"Barış",soyad:"HALLUM"},{no:485,ad:"Beyazıt",soyad:"GÖRKEN"},{no:318,ad:"Bilgesu",soyad:"TOPRAK"},
-  {no:788,ad:"Bora",soyad:"ALAS"},{no:839,ad:"Defne",soyad:"KAYNAR"},{no:873,ad:"Derin",soyad:"URAZ"},
-  {no:789,ad:"Elif",soyad:"ÇİTKAP"},{no:894,ad:"Emir Efe",soyad:"ALPER"},{no:554,ad:"Esra",soyad:"DEMİRLİ"},
-  {no:761,ad:"Eymen",soyad:"HALICI"},{no:631,ad:"Hüma",soyad:"ALTINIŞIK"},{no:760,ad:"İpek",soyad:"ELDEK"},
-  {no:470,ad:"Irmak",soyad:"ERDEM"},{no:512,ad:"Kumsal",soyad:"GÜNDOĞARKEN"},{no:883,ad:"Melis",soyad:"KILIÇ"},
-  {no:712,ad:"Mert",soyad:"BALCIOĞLU"},{no:901,ad:"Musa",soyad:"KARAÖZ"},{no:616,ad:"Mustafa",soyad:"DAL"},
-  {no:556,ad:"Naz",soyad:"AKGÜN"},{no:526,ad:"Nisa",soyad:"YALILAR"},{no:657,ad:"Onuralp",soyad:"TOK"},
-  {no:784,ad:"Önder",soyad:"TURĞAY"},{no:639,ad:"Poyraz",soyad:"SEZGİN"},{no:696,ad:"Roza",soyad:"AYDIN"},
-  {no:849,ad:"Rüzgar",soyad:"GÜL"},{no:484,ad:"Yaz",soyad:"YILMAZ"},{no:650,ad:"Yusuf",soyad:"BİRLİK"}
-].sort((a,b) => a.ad.localeCompare(b.ad, 'tr'));
+// Varsayılan veriler (Sizin listeniz)
+const defaultStudents = ["Ali Ömer ARSLAN","Arda ARSLAN","Ayşe ŞINIK","Barış HALLUM","Beyazıt GÖRKEN","Bilgesu TOPRAK","Bora ALAS","Defne KAYNAR","Derin URAZ","Elif ÇİTKAP","Emir Efe ALPER","Esra DEMİRLİ","Eymen HALICI","Hüma ALTINIŞIK","İpek ELDEK","Irmak ERDEM","Kumsal GÜNDOĞARKEN","Melis KILIÇ","Mert BALCIOĞLU","Musa KARAÖZ","Mustafa DAL","Naz AKGÜN","Nisa YALILAR","Onuralp TOK","Önder TURĞAY","Poyraz SEZGİN","Roza AYDIN","Rüzgar GÜL","Yaz YILMAZ","Yusuf BİRLİK"];
+const defaultDersler = ["Türkçe","Matematik","Fen Bilimleri","Sosyal Bilgiler","İngilizce"];
 
-const DERSLER = ["Türkçe","Matematik","Fen Bilimleri","Sosyal Bilgiler","İngilizce"];
-let db = JSON.parse(localStorage.getItem('edu_master_v5') || '{"dev":{}, "kat":{}, "odev":{}}');
+let config = JSON.parse(localStorage.getItem('pwa_config') || JSON.stringify({
+    students: defaultStudents,
+    dersler: defaultDersler,
+    clsName: "4-A Sınıfı"
+}));
+
+let db = JSON.parse(localStorage.getItem('pwa_data_v6') || '{"dev":{}, "kat":{}, "odev":{}}');
 
 window.git = function(id, btn) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -122,91 +127,90 @@ window.git = function(id, btn) {
 
 window.renderDev = function() {
     const t = document.getElementById('dateDev').value;
-    const cont = document.getElementById('listDev');
     const data = db.dev[t] || {};
-    cont.innerHTML = STUDENTS.map(s => `<div class="student-row"><span>${s.ad} ${s.soyad}</span><div class="btn-group">
-        <button class="btn-opt ${data[s.no]==='yok'?'':'active'}" onclick="upd('dev','${t}',${s.no},'var')">VAR</button>
-        <button class="btn-opt ${data[s.no]==='yok'?'active':''}" onclick="upd('dev','${t}',${s.no},'yok')">YOK</button>
-    </div></div>`).join('');
+    document.getElementById('listDev').innerHTML = config.students.map(s => `
+        <div class="student-row"><span>${s}</span><div class="btn-group">
+            <button class="btn-opt ${data[s]==='yok'?'':'active'}" onclick="upd('dev','${t}','${s}','var')">VAR</button>
+            <button class="btn-opt ${data[s]==='yok'?'active':''}" onclick="upd('dev','${t}','${s}','yok')">YOK</button>
+        </div></div>`).join('');
 };
 
 window.renderKat = function() {
     const d = document.getElementById('selKatDers').value;
     const t = document.getElementById('dateKat').value;
-    const cont = document.getElementById('listKat');
-    if(!d) { cont.innerHTML = "Ders seçiniz."; return; }
+    if(!d) return;
     const key = t + "_" + d;
     const data = db.kat[key] || {};
-    cont.innerHTML = STUDENTS.map(s => `<div class="student-row"><span>${s.ad} ${s.soyad}</span>
-        <button class="btn-opt ${data[s.no]?'active':''}" onclick="upd('kat','${key}',${s.no},${!data[s.no]})">${data[s.no]?'⭐':'PASİF'}</button>
-    </div>`).join('');
+    document.getElementById('listKat').innerHTML = config.students.map(s => `
+        <div class="student-row"><span>${s}</span>
+            <button class="btn-opt ${data[s]?'active':''}" onclick="upd('kat','${key}','${s}',${!data[s]})">${data[s]?'⭐':'PASİF'}</button>
+        </div>`).join('');
 };
 
 window.renderOdev = function() {
     const d = document.getElementById('selOdevDers').value;
     const t = document.getElementById('dateOdev').value;
-    const cont = document.getElementById('listOdev');
-    if(!d) { cont.innerHTML = "Ders seçiniz."; return; }
+    if(!d) return;
     const key = t + "_" + d;
     const data = db.odev[key] || {};
-    cont.innerHTML = STUDENTS.map(s => `<div class="student-row"><span>${s.ad} ${s.soyad}</span>
-        <button class="btn-opt ${data[s.no]?'active':''}" onclick="upd('odev','${key}',${s.no},${!data[s.no]})">${data[s.no]?'✅':'YOK'}</button>
-    </div>`).join('');
+    document.getElementById('listOdev').innerHTML = config.students.map(s => `
+        <div class="student-row"><span>${s}</span>
+            <button class="btn-opt ${data[s]?'active':''}" onclick="upd('odev','${key}','${s}',${!data[s]})">${data[s]?'✅':'YOK'}</button>
+        </div>`).join('');
 };
 
 window.upd = function(t, k, n, v) { if(!db[t][k]) db[t][k] = {}; db[t][k][n] = v; renderDev(); renderKat(); renderOdev(); };
 
-window.masterSave = function() { localStorage.setItem('edu_master_v5', JSON.stringify(db)); alert("Kaydedildi!"); };
+window.masterSave = function() { localStorage.setItem('pwa_data_v6', JSON.stringify(db)); alert("Veriler Kaydedildi!"); };
+
+window.saveConfig = function() { config.clsName = document.getElementById('inpCls').value; saveAll(); };
+window.saveDersler = function() { config.dersler = document.getElementById('inpDersler').value.split(',').map(x => x.trim()); saveAll(); };
+window.saveOgrenciler = function() { 
+    config.students = document.getElementById('inpOgrenciler').value.split('\n').filter(x => x.trim() !== "").sort((a,b) => a.localeCompare(b, 'tr')); 
+    saveAll(); 
+};
+
+function saveAll() { localStorage.setItem('pwa_config', JSON.stringify(config)); location.reload(); }
 
 window.renderRapor = function() {
-    const tur = document.getElementById('raporTur').value;
-    const cont = document.getElementById('listRapor');
-    let html = "<table><thead><tr><th>Öğrenci</th>";
-    
-    if(tur === 'genel') {
-        html += "<th>YOK</th><th>⭐</th><th>✅</th></tr></thead><tbody>";
-        STUDENTS.forEach(s => {
-            let y=0, k=0, o=0;
-            Object.values(db.dev).forEach(d => { if(d[s.no]==='yok') y++; });
-            Object.values(db.kat).forEach(l => { if(l[s.no]) k++; });
-            Object.values(db.odev).forEach(l => { if(l[s.no]) o++; });
-            html += `<tr><td>${s.ad} ${s.soyad}</td><td>${y}</td><td>${k}</td><td>${o}</td></tr>`;
-        });
-    } else {
-        html += "<th>Ders</th><th>Durum</th></tr></thead><tbody>";
-        DERSLER.forEach(d => {
-            let count = 0;
-            Object.entries(db.kat).forEach(([key, val]) => { if(key.includes(d)) Object.values(val).forEach(v => { if(v) count++; }); });
-            html += `<tr><td>Sınıf Geneli</td><td>${d}</td><td>${count} Toplam Yıldız</td></tr>`;
-        });
-    }
-    cont.innerHTML = html + "</tbody></table>";
+    let html = "<table><thead><tr><th>Öğrenci</th><th>YOK</th><th>⭐</th><th>✅</th></tr></thead><tbody>";
+    config.students.forEach(s => {
+        let y=0, k=0, o=0;
+        Object.values(db.dev).forEach(d => { if(d[s]==='yok') y++; });
+        Object.values(db.kat).forEach(l => { if(l[s]) k++; });
+        Object.values(db.odev).forEach(l => { if(l[s]) o++; });
+        html += `<tr><td>${s}</td><td>${y}</td><td>${k}</td><td>${o}</td></tr>`;
+    });
+    document.getElementById('listRapor').innerHTML = html + "</tbody></table>";
 };
 
 window.exportExcel = function() {
-    const data = STUDENTS.map(s => {
+    const data = config.students.map(s => {
         let y=0, k=0, o=0;
-        Object.values(db.dev).forEach(d => { if(d[s.no]==='yok') y++; });
-        Object.values(db.kat).forEach(l => { if(l[s.no]) k++; });
-        Object.values(db.odev).forEach(l => { if(l[s.no]) o++; });
-        return {"Ad Soyad": `${s.ad} ${s.soyad}`, "Devamsızlık": y, "Katılım (Yıldız)": k, "Ödev": o};
+        Object.values(db.dev).forEach(d => { if(d[s]==='yok') y++; });
+        Object.values(db.kat).forEach(l => { if(l[s]) k++; });
+        Object.values(db.odev).forEach(l => { if(l[s]) o++; });
+        return {"Öğrenci": s, "Yoklama (YOK)": y, "Yıldız": k, "Ödev Tamam": o};
     });
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Rapor");
-    XLSX.writeFile(wb, "Ogretmen_Takip_Rapor.xlsx");
+    XLSX.utils.book_append_sheet(wb, ws, "Sınıf Raporu");
+    XLSX.writeFile(wb, `${config.clsName}_Rapor.xlsx`);
 };
 
-window.saveClsName = function() { localStorage.setItem('cls_v5', document.getElementById('inpCls').value); location.reload(); };
-window.fullClear = function() { if(confirm("SİLİNSİN Mİ?")) { localStorage.clear(); location.reload(); } };
+window.fullClear = function() { if(confirm("TÜM VERİLER VE AYARLAR SİLİNSİN Mİ?")) { localStorage.clear(); location.reload(); } };
 
 document.addEventListener('DOMContentLoaded', () => {
     const t = new Date().toISOString().split('T')[0];
     ['dateDev','dateKat','dateOdev'].forEach(id => document.getElementById(id).value = t);
-    let opts = '<option value="">-- Seç --</option>' + DERSLER.map(d => `<option value="${d}">${d}</option>`).join('');
+    
+    let opts = '<option value="">-- Ders Seç --</option>' + config.dersler.map(d => `<option value="${d}">${d}</option>`).join('');
     ['selKatDers','selOdevDers'].forEach(id => document.getElementById(id).innerHTML = opts);
-    const saved = localStorage.getItem('cls_v5');
-    if(saved) document.getElementById('clsTitle').innerText = saved;
+    
+    document.getElementById('clsTitle').innerText = config.clsName;
+    document.getElementById('inpCls').value = config.clsName;
+    document.getElementById('inpDersler').value = config.dersler.join(', ');
+    document.getElementById('inpOgrenciler').value = config.students.join('\n');
     renderDev();
 });
 </script>
