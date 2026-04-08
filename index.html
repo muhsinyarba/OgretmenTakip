@@ -3,79 +3,122 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Öğretmen Takip - Çoklu Sınıf</title>
+<title>Öğretmen Takip - Sabit</title>
 <style>
-  :root { --p: #2563eb; --g: #64748b; --b: #e2e8f0; --d: #ef4444; }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-  body { background: #f8fafc; padding-bottom: 90px; }
-  header { background: var(--p); color: white; padding: 12px; text-align: center; }
-  .s-bar { background: #1e3a8a; color: white; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
-  nav { display: flex; background: white; border-bottom: 1px solid var(--b); position: sticky; top: 0; z-index: 100; }
-  nav button { flex: 1; padding: 15px 5px; border: none; background: none; font-weight: bold; font-size: 11px; color: var(--g); border-bottom: 3px solid transparent; }
-  nav button.active { color: var(--p); border-bottom-color: var(--p); background: #f0f7ff; }
-  .page { display: none; padding: 12px; }
+  body { background: #f0f4ff; padding-bottom: 80px; }
+  header { background: #2563eb; color: white; padding: 15px; text-align: center; }
+  nav { display: flex; background: white; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 999; }
+  nav button { flex: 1; padding: 15px 5px; border: none; background: none; font-weight: bold; font-size: 11px; color: #666; cursor: pointer; }
+  nav button.active { color: #2563eb; border-bottom: 3px solid #2563eb; background: #f0f7ff; }
+  .page { display: none; padding: 10px; }
   .page.active { display: block; }
-  .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-  .row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
-  .btn-s { padding: 8px 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-weight: bold; font-size: 11px; }
-  .btn-s.on { background: var(--p); color: white; border-color: var(--p); }
-  select, input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #cbd5e1; }
-  .btn-m { width: 100%; padding: 12px; border-radius: 6px; border: none; background: var(--p); color: white; font-weight: bold; cursor: pointer; }
-  .save-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 10px; border-top: 1px solid #e2e8f0; }
+  .card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 13px; }
+  .btn-s { padding: 8px 10px; border-radius: 6px; border: 1px solid #ddd; background: white; font-weight: bold; font-size: 10px; }
+  .btn-s.on { background: #2563eb; color: white; border-color: #2563eb; }
+  select, input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ddd; }
+  .save-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 10px; border-top: 1px solid #ddd; z-index: 1000; }
+  .btn-m { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #2563eb; color: white; font-weight: bold; cursor: pointer; }
 </style>
 </head>
 <body>
 
-<header><h2>Öğretmen Takip PRO</h2></header>
+<header><h2 id="topT">4-A Sınıf Takip</h2></header>
 
-<div class="s-bar">
-  <span>Sınıf: <b id="curClsName">...</b></span>
-  <select id="clsSel" onchange="switchCls(this.value)" style="width:auto; margin:0; padding:2px;"></select>
-</div>
-
-<nav id="mNav">
-  <button class="active" onclick="go('dev', this)">🚫 Yoklama</button>
-  <button onclick="go('kat', this)">⭐ Katılım</button>
-  <button onclick="go('odev', this)">📝 Ödev</button>
-  <button onclick="go('rap', this)">📊 Rapor</button>
-  <button onclick="go('set', this)">⚙️ Yönetim</button>
+<nav id="navbar">
+  <button onclick="tab('p1', this)" class="active">🚫 Yoklama</button>
+  <button onclick="tab('p2', this)">⭐ Katılım</button>
+  <button onclick="tab('p3', this)">📝 Ödev</button>
+  <button onclick="tab('p4', this)">📊 Rapor</button>
+  <button onclick="tab('p5', this)">⚙️ Ayar</button>
 </nav>
 
-<div id="dev" class="page active"><div class="card"><input type="date" id="dD" onchange="r()"><div id="lD"></div></div></div>
-<div id="kat" class="page"><div class="card"><select id="sK" onchange="r()"></select><input type="date" id="dK" onchange="r()"><div id="lK"></div></div></div>
-<div id="odev" class="page">
-  <div class="card"><select id="sO" onchange="r()"></select><input type="date" id="dO" onchange="r()"><div id="lO"></div></div>
-  <div class="card" style="border:1px solid red"><h3>🔍 Ödev Tarama</h3><button class="btn-m" onclick="scan()">Taramayı Başlat</button><div id="resS"></div></div>
+<div id="p1" class="page active"><div class="card"><h3>Günlük Yoklama</h3><input type="date" id="t1" onchange="r()"><div id="l1"></div></div></div>
+<div id="p2" class="page"><div class="card"><h3>Katılım</h3><select id="s2" onchange="r()"></select><input type="date" id="t2" onchange="r()"><div id="l2"></div></div></div>
+<div id="p3" class="page">
+    <div class="card"><h3>Ödev Girişi</h3><select id="s3" onchange="r()"></select><input type="date" id="t3" onchange="r()"><div id="l3"></div></div>
+    <div class="card" style="border:1px solid red"><h3>🔍 Ödev Tarama</h3><button class="btn-m" onclick="scan()">Taramayı Başlat</button><div id="lSc" style="font-size:12px;margin-top:10px"></div></div>
 </div>
-<div id="rap" class="page"><div class="card"><div id="lR"></div></div></div>
-
-<div id="set" class="page">
-  <div class="card">
-    <h3>Yeni Sınıf Ekle / Mevcutu Güncelle</h3>
-    <input type="text" id="iCN" placeholder="Sınıf Adı (Örn: 4-A)">
-    <textarea id="iCS" rows="5" placeholder="Öğrenci Listesi (Her satıra bir isim)"></textarea>
-    <button class="btn-m" onclick="upsertCls()">Sınıfı Kaydet</button>
-  </div>
-  <div class="card">
-    <button onclick="delCls()" style="color:red; background:none; border:none; width:100%; font-size:12px;">Mevcut Sınıfı Sil</button>
-  </div>
+<div id="p4" class="page"><div class="card"><h3>Sınıf Raporu</h3><div id="l4"></div></div></div>
+<div id="p5" class="page">
+    <div class="card"><h3>Yönetim</h3>
+        <input type="text" id="iCls" placeholder="Sınıf Adı">
+        <textarea id="iOgr" rows="10" placeholder="Öğrenci Listesi"></textarea>
+        <button class="btn-m" onclick="saveSet()">Ayarları Güncelle</button>
+        <button onclick="localStorage.clear();location.reload();" style="margin-top:20px;color:red;background:none;border:none;width:100%">⚠️ Tüm Verileri Sıfırla</button>
+    </div>
 </div>
 
-<div class="save-bar"><button class="btn-m" onclick="sv()">💾 TÜMÜNÜ KAYDET</button></div>
+<div class="save-bar"><button class="btn-m" onclick="saveAll()">💾 DEĞİŞİKLİKLERİ KAYDET</button></div>
 
 <script>
-const defO = ["Ali Ömer ARSLAN","Arda ARSLAN","Ayşe ŞINIK","Barış HALLUM","Beyazıt GÖRKEN","Bilgesu TOPRAK","Bora ALAS","Defne KAYNAR","Derin URAZ","Elif ÇİTKAP","Emir Efe ALPER","Esra DEMİRLİ","Eymen HALICI","Hüma ALTINIŞIK","İpek ELDEK","Irmak ERDEM","Kumsal GÜNDOĞARKEN","Melis KILIÇ","Mert BALCIOĞLU","Musa KARAÖZ","Mustafa DAL","Naz AKGÜN","Nisa YALILAR","Onuralp TOK","Önder TURĞAY","Poyraz SEZGİN","Roza AYDIN","Rüzgar GÜL","Yaz YILMAZ","Yusuf BİRLİK"];
-const defD = ["Türkçe","Matematik","Fen","Sosyal","İngilizce"];
+// SABİT VERİLER
+const oList = ["Ali Ömer ARSLAN","Arda ARSLAN","Ayşe ŞINIK","Barış HALLUM","Beyazıt GÖRKEN","Bilgesu TOPRAK","Bora ALAS","Defne KAYNAR","Derin URAZ","Elif ÇİTKAP","Emir Efe ALPER","Esra DEMİRLİ","Eymen HALICI","Hüma ALTINIŞIK","İpek ELDEK","Irmak ERDEM","Kumsal GÜNDOĞARKEN","Melis KILIÇ","Mert BALCIOĞLU","Musa KARAÖZ","Mustafa DAL","Naz AKGÜN","Nisa YALILAR","Onuralp TOK","Önder TURĞAY","Poyraz SEZGİN","Roza AYDIN","Rüzgar GÜL","Yaz YILMAZ","Yusuf BİRLİK"];
+const dList = ["Türkçe","Matematik","Fen Bilimleri","Sosyal Bilgiler","İngilizce"];
 
-let st = JSON.parse(localStorage.getItem('teacher_v10')) || {
-    cls: {"4-A": defO},
-    cur: "4-A",
-    ders: defD,
-    db: {v:{}, k:{}, od:{}}
-};
+let cf = JSON.parse(localStorage.getItem('cf_final')) || {o: oList, d: dList, n: "4-A Sınıfı"};
+let db = JSON.parse(localStorage.getItem('db_final')) || {v:{}, k:{}, od:{}};
 
-function switchCls(v) { st.cur = v; save(); location.reload(); }
+// SEKMELERİ ÇALIŞTIRAN ANA FONKSİYON
+function tab(id, btn) {
+    var pgs = document.getElementsByClassName('page');
+    for (var i = 0; i < pgs.length; i++) { pgs[i].style.display = 'none'; }
+    var btns = document.querySelectorAll('nav button');
+    for (var j = 0; j < btns.length; j++) { btns[j].className = ''; }
+    document.getElementById(id).style.display = 'block';
+    btn.className = 'active';
+    if(id==='p4') rRap();
+}
 
-function upsertCls() {
-    const n = document.getElementById('iCN').value.trim();
-    const s = document.getElementById('iCS').value.split('\n').filter(x=>x.trim()!=="").sort
+function r() {
+    const tV = document.getElementById('t1').value, dK = document.getElementById('s2').value, tK = document.getElementById('t2').value, dO = document.getElementById('s3').value, tO = document.getElementById('t3').value;
+    
+    // Yoklama
+    const vD = db.v[tV] || {};
+    document.getElementById('l1').innerHTML = cf.o.map(s => `<div class="row"><span>${s}</span><div><button class="btn-s ${vD[s]==='y'?'':'on'}" onclick="u('v','${tV}','${s}','v')">VAR</button><button class="btn-s ${vD[s]==='y'?'on':''}" onclick="u('v','${tV}','${s}','y')">YOK</button></div></div>`).join('');
+
+    // Katılım
+    if(dK) {
+        const key = tK+"_"+dK, data = db.k[key] || {};
+        document.getElementById('l2').innerHTML = cf.o.map(s => `<div class="row"><span>${s}</span><button class="btn-s ${data[s]?'on':''}" onclick="u('k','${key}','${s}',${!data[s]})">${data[s]?'⭐':'PAS'}</button></div>`).join('');
+    }
+    // Ödev
+    if(dO) {
+        const key = tO+"_"+dO, data = db.od[key] || {};
+        document.getElementById('l3').innerHTML = cf.o.map(s => `<div class="row"><span>${s}</span><button class="btn-s ${data[s]?'on':''}" onclick="u('od','${key}','${s}',${!data[s]})">${data[s]?'✅':'YOK'}</button></div>`).join('');
+    }
+}
+
+function u(t, k, n, v) { if(!db[t][k]) db[t][k] = {}; db[t][k][n] = v; r(); }
+function saveAll() { localStorage.setItem('db_final', JSON.stringify(db)); alert("Kaydedildi!"); }
+function saveSet() {
+    cf.n = document.getElementById('iCls').value;
+    cf.o = document.getElementById('iOgr').value.split('\n').filter(x=>x.trim()!=="").sort((a,b)=>a.localeCompare(b,'tr'));
+    localStorage.setItem('cf_final', JSON.stringify(cf));
+    location.reload();
+}
+
+function rRap() {
+    let h = "<table border='1' style='width:100%; border-collapse:collapse'><tr><th>Öğrenci</th><th>YOK</th><th>⭐</th><th>✅</th></tr>";
+    cf.o.forEach(s => {
+        let y=0, k=0, o=0;
+        Object.values(db.v).forEach(d => {if(d[s]==='y') y++;});
+        Object.values(db.k).forEach(l => {if(l[s]) k++;});
+        Object.values(db.od).forEach(l => {if(l[s]) o++;});
+        h += `<tr><td>${s}</td><td>${y}</td><td>${k}</td><td>${o}</td></tr>`;
+    });
+    document.getElementById('l4').innerHTML = h + "</table>";
+}
+
+function scan() {
+    let h = "";
+    cf.o.forEach(s => {
+        let e = [];
+        Object.keys(db.od).forEach(k => { if(db.od[k][s] === false) e.push(k.replace("_"," ")); });
+        if(e.length > 0) h += `<div style='margin-bottom:5px'><b>${s}</b>: ${e.join(', ')}</div>`;
+    });
+    document.getElementById('lSc').innerHTML = h || "Eksik ödev yok.";
+}
+
+window
