@@ -3,76 +3,45 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Öğretmen Takip - Geriye Dönük Sorgulu</title>
-<link rel="manifest" href="manifest.json">
+<title>Öğretmen Takip - Nihai</title>
 <style>
-  :root { --primary: #2563eb; --success: #16a34a; --danger: #dc2626; --gray: #6b7280; --border: #e5e7eb; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: sans-serif; background: #f0f4ff; color: #111827; padding-bottom: 100px; }
-  header { background: var(--primary); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 1000; }
-  nav { display: flex; background: white; border-bottom: 1px solid var(--border); position: sticky; top: 55px; z-index: 999; overflow-x: auto; }
-  nav button { flex: 1; min-width: 80px; padding: 12px 5px; border: none; background: none; font-weight: bold; cursor: pointer; color: var(--gray); border-bottom: 3px solid transparent; font-size: 11px; }
-  nav button.active { color: var(--primary); border-bottom-color: var(--primary); background: #f0f7ff; }
-  .page { display: none; padding: 12px; }
+  :root { --p: #2563eb; --g: #6b7280; --b: #e5e7eb; }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+  body { background: #f0f4ff; padding-bottom: 80px; }
+  header { background: var(--p); color: white; padding: 15px; text-align: center; }
+  nav { display: flex; background: white; border-bottom: 1px solid var(--b); position: sticky; top: 0; z-index: 100; }
+  nav button { flex: 1; padding: 15px 5px; border: none; background: none; font-weight: bold; font-size: 11px; color: var(--g); border-bottom: 3px solid transparent; }
+  nav button.active { color: var(--p); border-bottom-color: var(--p); }
+  .page { display: none; padding: 10px; }
   .page.active { display: block; }
-  .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-  h3 { font-size: 14px; margin-bottom: 10px; color: var(--primary); border-bottom: 1px solid #eee; padding-bottom: 5px; }
-  .student-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f5f5f5; font-size: 13px; }
-  .btn-group { display: flex; gap: 4px; }
-  .btn-opt { padding: 8px 10px; border-radius: 6px; border: 1px solid #ddd; background: white; font-weight: bold; cursor: pointer; font-size: 11px; }
-  .btn-opt.active { background: var(--primary); color: white; border-color: var(--primary); }
-  select, input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ddd; font-family: inherit; }
-  .save-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 12px; border-top: 1px solid #ddd; z-index: 1001; }
-  .btn-main { width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; }
-  .history-box { background: #fff5f5; border: 1px solid #feb2b2; border-radius: 8px; padding: 10px; margin-top: 10px; font-size: 12px; }
-  table { width: 100%; border-collapse: collapse; font-size: 11px; }
-  th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+  .card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 13px; }
+  .btn-s { padding: 6px 10px; border-radius: 5px; border: 1px solid #ddd; background: white; font-weight: bold; font-size: 11px; }
+  .btn-s.on { background: var(--p); color: white; border-color: var(--p); }
+  select, input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ddd; }
+  .save-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 10px; border-top: 1px solid #ddd; }
+  .btn-m { width: 100%; padding: 12px; border-radius: 5px; border: none; background: var(--p); color: white; font-weight: bold; }
+  .hist { background: #fff5f5; padding: 8px; border-radius: 5px; font-size: 11px; margin-top: 5px; color: #c53030; line-height: 1.4; }
 </style>
 </head>
 <body>
 
-<header><h2 id="clsTitle">Öğretmen Takip</h2></header>
+<header><h2 id="headT">Öğretmen Takip</h2></header>
 
-<nav id="mainNav">
-  <button class="active" onclick="git('devamsizlik', this)">🚫 Yoklama</button>
-  <button onclick="git('katilim', this)">⭐ Katılım</button>
-  <button onclick="git('odev', this)">📝 Ödev</button>
-  <button onclick="git('rapor', this)">📊 Rapor</button>
-  <button onclick="git('ayarlar', this)">⚙️ Yönetim</button>
+<nav id="mNav">
+  <button class="active" onclick="pg('dev')">🚫 Yoklama</button>
+  <button onclick="pg('kat')">⭐ Katılım</button>
+  <button onclick="pg('odev')">📝 Ödev</button>
+  <button onclick="pg('rap')">📊 Rapor</button>
+  <button onclick="pg('set')">⚙️ Ayar</button>
 </nav>
 
-<div id="devamsizlik" class="page active">
-  <div class="card">
-    <h3>🚫 Günlük Yoklama</h3>
-    <input type="date" id="dateDev" onchange="renderDev()">
-    <div id="listDev"></div>
-  </div>
-</div>
-
-<div id="katilim" class="page">
-  <div class="card">
-    <h3>⭐ Derse Katılım</h3>
-    <select id="selKatDers" onchange="renderKat()"></select>
-    <input type="date" id="dateKat" onchange="renderKat()">
-    <div id="listKat"></div>
-  </div>
-</div>
-
+<div id="dev" class="page active"><div class="card"><h3>Yoklama</h3><input type="date" id="dDev" onchange="rDev()"><div id="lDev"></div></div></div>
+<div id="kat" class="page"><div class="card"><h3>Katılım</h3><select id="sK" onchange="rKat()"></select><input type="date" id="dKat" onchange="rKat()"><div id="lKat"></div></div></div>
 <div id="odev" class="page">
-  <div class="card">
-    <h3>📝 Ödev Takibi (Günlük)</h3>
-    <select id="selOdevDers" onchange="renderOdev()"></select>
-    <input type="date" id="dateOdev" onchange="renderOdev()">
-    <div id="listOdev"></div>
-  </div>
-  <div class="card" style="border-top: 3px solid var(--danger);">
-    <h3>🔍 Ödev Geçmişi Sorgula</h3>
-    <select id="selOdevSorgu" onchange="sorgulaOdev()"></select>
-    <div id="sorguSonuc"></div>
-  </div>
+    <div class="card"><h3>Ödev Girişi</h3><select id="sO" onchange="rOdev()"></select><input type="date" id="dO" onchange="rOdev()"><div id="lOdev"></div></div>
+    <div class="card" style="border: 2px solid red;"><h3>Geçmiş Ödev Sorgu</h3><select id="sSor" onchange="fSor()"></select><div id="resSor"></div></div>
 </div>
-
-<div id="rapor" class="page">
-  <div class="card">
-    <h3>📊 Raporlar</h3>
-    <button class="btn-main" style="background:#059669; margin-
+<div id="rap" class="page"><div class="card"><h3>Genel Rapor</h3><div id="lRap"></div></div></div>
+<div id="set" class="page">
+    <div class="card"><h3>Sınıf & Ders</h3><input type="text" id="iCls"><textarea id="iDer" rows="2"></textarea><button class="btn-m
