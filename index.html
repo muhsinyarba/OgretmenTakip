@@ -121,4 +121,16 @@ function scan() {
     document.getElementById('lSc').innerHTML = h || "Eksik ödev yok.";
 }
 
-window
+window.onload = function() {
+    const t = new Date().toISOString().split('T')[0];
+    document.getElementById('t1').value = document.getElementById('t2').value = document.getElementById('t3').value = t;
+    let opts = '<option value="">-- Ders Seç --</option>' + cf.d.map(d => `<option value="${d}">${d}</option>`).join('');
+    document.getElementById('s2').innerHTML = document.getElementById('s3').innerHTML = opts;
+    document.getElementById('topT').innerText = cf.n;
+    document.getElementById('iCls').value = cf.n;
+    document.getElementById('iOgr').value = cf.o.join('\n');
+    r();
+};
+</script>
+</body>
+</html>
