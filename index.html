@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Öğretmen Takip - Geriye Dönük Takip</title>
+<title>Öğretmen Takip - Geriye Dönük Sorgulu</title>
 <link rel="manifest" href="manifest.json">
 <style>
   :root { --primary: #2563eb; --success: #16a34a; --danger: #dc2626; --gray: #6b7280; --border: #e5e7eb; }
@@ -23,21 +23,40 @@
   .btn-opt.active { background: var(--primary); color: white; border-color: var(--primary); }
   select, input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ddd; font-family: inherit; }
   .save-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 12px; border-top: 1px solid #ddd; z-index: 1001; }
-  .btn-main { width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; margin-top: 5px; }
+  .btn-main { width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; }
   .history-box { background: #fff5f5; border: 1px solid #feb2b2; border-radius: 8px; padding: 10px; margin-top: 10px; font-size: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
 </style>
 </head>
 <body>
 
 <header><h2 id="clsTitle">Öğretmen Takip</h2></header>
 
-<nav>
+<nav id="mainNav">
   <button class="active" onclick="git('devamsizlik', this)">🚫 Yoklama</button>
   <button onclick="git('katilim', this)">⭐ Katılım</button>
   <button onclick="git('odev', this)">📝 Ödev</button>
   <button onclick="git('rapor', this)">📊 Rapor</button>
   <button onclick="git('ayarlar', this)">⚙️ Yönetim</button>
 </nav>
+
+<div id="devamsizlik" class="page active">
+  <div class="card">
+    <h3>🚫 Günlük Yoklama</h3>
+    <input type="date" id="dateDev" onchange="renderDev()">
+    <div id="listDev"></div>
+  </div>
+</div>
+
+<div id="katilim" class="page">
+  <div class="card">
+    <h3>⭐ Derse Katılım</h3>
+    <select id="selKatDers" onchange="renderKat()"></select>
+    <input type="date" id="dateKat" onchange="renderKat()">
+    <div id="listKat"></div>
+  </div>
+</div>
 
 <div id="odev" class="page">
   <div class="card">
@@ -46,161 +65,14 @@
     <input type="date" id="dateOdev" onchange="renderOdev()">
     <div id="listOdev"></div>
   </div>
-
-  <div class="card" style="border-top: 4px solid var(--danger);">
-    <h3>🔍 Geriye Dönük Ödev Sorgula</h3>
-    <p style="font-size:11px; color:gray; margin-bottom:8px;">Öğrenci seçerek yapmadığı ödevleri listeleyin:</p>
+  <div class="card" style="border-top: 3px solid var(--danger);">
+    <h3>🔍 Ödev Geçmişi Sorgula</h3>
     <select id="selOdevSorgu" onchange="sorgulaOdev()"></select>
     <div id="sorguSonuc"></div>
   </div>
 </div>
 
-<div id="devamsizlik" class="page active"><div class="card"><h3>🚫 Günlük Yoklama</h3><input type="date" id="dateDev" onchange="renderDev()"><div id="listDev"></div></div></div>
-<div id="katilim" class="page"><div class="card"><h3>⭐ Derse Katılım</h3><select id="selKatDers" onchange="renderKat()"></select><input type="date" id="dateKat" onchange="renderKat()"><div id="listKat"></div></div></div>
-<div id="rapor" class="page"><div class="card"><h3>📊 Raporlar</h3><button class="btn-main" style="background:#059669; margin-bottom:10px;" onclick="exportExcel()">📥 Excel İndir</button><div id="listRapor"></div></div></div>
-<div id="ayarlar" class="page">
-  <div class="card"><h3>🏫 Sınıf Ayarları</h3><input type="text" id="inpCls" placeholder="Sınıf İsmi"><button class="btn-main" onclick="saveConfig()">Güncelle</button></div>
-  <div class="card"><h3>📚 Ders Yönetimi</h3><textarea id="inpDersler" rows="2"></textarea><button class="btn-main" onclick="saveDersler()">Dersleri Güncelle</button></div>
-  <div class="card"><h3>👥 Öğrenci Listesi</h3><textarea id="inpOgrenciler" rows="10"></textarea><button class="btn-main" style="background:#8b5cf6;" onclick="saveOgrenciler()">Listeyi Kaydet</button></div>
-  <div class="card"><button onclick="fullClear()" style="width:100%; color:red; border:1px solid red; background:none; padding:10px; border-radius:8px; cursor:pointer;">⚠️ Sıfırla</button></div>
-</div>
-
-<div class="save-bar"><button class="btn-main" onclick="masterSave()">💾 VERİLERİ KAYDET</button></div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script>
-// VARSAYILANLAR
-const defaultStudents = ["Ali Ömer ARSLAN","Arda ARSLAN","Ayşe ŞINIK","Barış HALLUM","Beyazıt GÖRKEN","Bilgesu TOPRAK","Bora ALAS","Defne KAYNAR","Derin URAZ","Elif ÇİTKAP","Emir Efe ALPER","Esra DEMİRLİ","Eymen HALICI","Hüma ALTINIŞIK","İpek ELDEK","Irmak ERDEM","Kumsal GÜNDOĞARKEN","Melis KILIÇ","Mert BALCIOĞLU","Musa KARAÖZ","Mustafa DAL","Naz AKGÜN","Nisa YALILAR","Onuralp TOK","Önder TURĞAY","Poyraz SEZGİN","Roza AYDIN","Rüzgar GÜL","Yaz YILMAZ","Yusuf BİRLİK"];
-const defaultDersler = ["Türkçe","Matematik","Fen Bilimleri","Sosyal Bilgiler","İngilizce"];
-
-let config = JSON.parse(localStorage.getItem('pwa_config') || JSON.stringify({
-    students: defaultStudents,
-    dersler: defaultDersler,
-    clsName: "4-A Sınıfı"
-}));
-
-let db = JSON.parse(localStorage.getItem('pwa_data_v7') || '{"dev":{}, "kat":{}, "odev":{}}');
-
-window.git = function(id, btn) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    btn.classList.add('active');
-    if(id === 'rapor') renderRapor();
-};
-
-window.renderDev = function() {
-    const t = document.getElementById('dateDev').value;
-    const data = db.dev[t] || {};
-    document.getElementById('listDev').innerHTML = config.students.map(s => `
-        <div class="student-row"><span>${s}</span><div class="btn-group">
-            <button class="btn-opt ${data[s]==='yok'?'':'active'}" onclick="upd('dev','${t}','${s}','var')">VAR</button>
-            <button class="btn-opt ${data[s]==='yok'?'active':''}" onclick="upd('dev','${t}','${s}','yok')">YOK</button>
-        </div></div>`).join('');
-};
-
-window.renderKat = function() {
-    const d = document.getElementById('selKatDers').value;
-    const t = document.getElementById('dateKat').value;
-    if(!d) return;
-    const key = t + "_" + d;
-    const data = db.kat[key] || {};
-    document.getElementById('listKat').innerHTML = config.students.map(s => `
-        <div class="student-row"><span>${s}</span>
-            <button class="btn-opt ${data[s]?'active':''}" onclick="upd('kat','${key}','${s}',${!data[s]})">${data[s]?'⭐':'PASİF'}</button>
-        </div>`).join('');
-};
-
-window.renderOdev = function() {
-    const d = document.getElementById('selOdevDers').value;
-    const t = document.getElementById('dateOdev').value;
-    if(!d) return;
-    const key = t + "_" + d;
-    const data = db.odev[key] || {};
-    document.getElementById('listOdev').innerHTML = config.students.map(s => `
-        <div class="student-row"><span>${s}</span>
-            <button class="btn-opt ${data[s]?'active':''}" onclick="upd('odev','${key}','${s}',${!data[s]})">${data[s]?'✅':'YOK'}</button>
-        </div>`).join('');
-};
-
-// YENİ: GERİYE DÖNÜK ÖDEV SORGULAMA
-window.sorgulaOdev = function() {
-    const sName = document.getElementById('selOdevSorgu').value;
-    const resBox = document.getElementById('sorguSonuc');
-    if(!sName) { resBox.innerHTML = ""; return; }
-    
-    let eksikler = [];
-    // db.odev içindeki tüm tarih_ders anahtarlarını tara
-    Object.keys(db.odev).forEach(key => {
-        const [tarih, ders] = key.split('_');
-        // Eğer o tarihte/derste bu öğrenci false (veya hiç yoksa) ve veri girişi yapılmışsa
-        if(db.odev[key][sName] === false) {
-            eksikler.push(`<b>${tarih}</b> - ${ders}`);
-        }
-    });
-
-    if(eksikler.length > 0) {
-        resBox.innerHTML = `<div class="history-box">
-            <p style="color:var(--danger); font-weight:bold; margin-bottom:5px;">⚠️ Yapılmayan Ödevler (${eksikler.length} Adet):</p>
-            ${eksikler.reverse().join('<br>')}
-        </div>`;
-    } else {
-        resBox.innerHTML = `<div class="history-box" style="background:#f0fff4; border-color:#9ae6b4; color:#2f855a;">
-            ✅ Bu öğrencinin sisteme kayıtlı eksik ödevi bulunmamaktadır.
-        </div>`;
-    }
-};
-
-window.upd = function(t, k, n, v) { 
-    if(!db[t][k]) db[t][k] = {}; 
-    db[t][k][n] = v; 
-    renderDev(); renderKat(); renderOdev(); 
-    if(t === 'odev') sorgulaOdev();
-};
-
-window.masterSave = function() { localStorage.setItem('pwa_data_v7', JSON.stringify(db)); alert("Kaydedildi!"); };
-
-window.saveConfig = function() { config.clsName = document.getElementById('inpCls').value; saveAll(); };
-window.saveDersler = function() { config.dersler = document.getElementById('inpDersler').value.split(',').map(x => x.trim()); saveAll(); };
-window.saveOgrenciler = function() { 
-    config.students = document.getElementById('inpOgrenciler').value.split('\n').filter(x => x.trim() !== "").sort((a,b) => a.localeCompare(b, 'tr')); 
-    saveAll(); 
-};
-function saveAll() { localStorage.setItem('pwa_config', JSON.stringify(config)); location.reload(); }
-
-window.renderRapor = function() {
-    let html = "<table><thead><tr><th>Öğrenci</th><th>YOK</th><th>⭐</th><th>✅</th></tr></thead><tbody>";
-    config.students.forEach(s => {
-        let y=0, k=0, o=0;
-        Object.values(db.dev).forEach(d => { if(d[s]==='yok') y++; });
-        Object.values(db.kat).forEach(l => { if(l[s]) k++; });
-        Object.values(db.odev).forEach(l => { if(l[s]) o++; });
-        html += `<tr><td>${s}</td><td>${y}</td><td>${k}</td><td>${o}</td></tr>`;
-    });
-    document.getElementById('listRapor').innerHTML = html + "</tbody></table>";
-};
-
-window.exportExcel = function() {
-    const data = config.students.map(s => {
-        let y=0, k=0, o=0;
-        Object.values(db.dev).forEach(d => { if(d[s]==='yok') y++; });
-        Object.values(db.kat).forEach(l => { if(l[s]) k++; });
-        Object.values(db.odev).forEach(l => { if(l[s]) o++; });
-        return {"Öğrenci": s, "Yoklama (YOK)": y, "Yıldız": k, "Ödev": o};
-    });
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Rapor");
-    XLSX.writeFile(wb, `${config.clsName}_Rapor.xlsx`);
-};
-
-window.fullClear = function() { if(confirm("SİLİNSİN Mİ?")) { localStorage.clear(); location.reload(); } };
-
-document.addEventListener('DOMContentLoaded', () => {
-    const t = new Date().toISOString().split('T')[0];
-    ['dateDev','dateKat','dateOdev'].forEach(id => document.getElementById(id).value = t);
-    let opts = '<option value="">-- Ders Seç --</option>' + config.dersler.map(d => `<option value="${d}">${d}</option>`).join('');
-    ['selKatDers','selOdevDers'].forEach(id => document.getElementById(id).innerHTML = opts);
-    
-    // Sorgu için öğrenci listesi
-    document.getElementById('selOdevSorgu').innerHTML =
+<div id="rapor" class="page">
+  <div class="card">
+    <h3>📊 Raporlar</h3>
+    <button class="btn-main" style="background:#059669; margin-
