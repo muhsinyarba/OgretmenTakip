@@ -3,27 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Öğretmen Takip - Ödev Detaylı</title>
+<title>Öğretmen Takip - Sözlü Modüllü</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
   body { background: #f0f4ff; padding-bottom: 80px; }
   header { background: #2563eb; color: white; padding: 15px; text-align: center; }
   .s-bar { background: #1e3a8a; color: white; padding: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
-  nav { display: flex; background: white; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 999; }
-  nav button { flex: 1; padding: 15px 5px; border: none; background: none; font-weight: bold; font-size: 11px; color: #666; cursor: pointer; }
+  nav { display: flex; background: white; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 999; overflow-x: auto; }
+  nav button { flex: 1; min-width: 70px; padding: 15px 5px; border: none; background: none; font-weight: bold; font-size: 11px; color: #666; cursor: pointer; }
   nav button.active { color: #2563eb; border-bottom: 3px solid #2563eb; background: #f0f7ff; }
   .page { display: none; padding: 10px; }
   .page.active { display: block; }
   .card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
   h3 { font-size: 14px; margin-bottom: 10px; color: #2563eb; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-  .row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 13px; }
-  .btn-s { padding: 8px 10px; border-radius: 6px; border: 1px solid #ddd; background: white; font-weight: bold; font-size: 10px; }
+  .row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 13px; }
+  .btn-s { padding: 6px 8px; border-radius: 4px; border: 1px solid #ddd; background: white; font-weight: bold; font-size: 10px; min-width: 35px; }
   .btn-s.on { background: #2563eb; color: white; border-color: #2563eb; }
-  select, input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ddd; font-size: 14px; }
+  .btn-s.half { background: #f59e0b; color: white; border-color: #f59e0b; }
+  .btn-s.off { background: #ef4444; color: white; border-color: #ef4444; }
+  select, input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ddd; font-size: 13px; }
   .btn-m { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #2563eb; color: white; font-weight: bold; cursor: pointer; }
   .save-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 10px; border-top: 1px solid #ddd; z-index: 1000; }
-  table { width: 100%; border-collapse: collapse; font-size: 11px; }
-  th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+  table { width: 100%; border-collapse: collapse; font-size: 10px; }
+  th, td { border: 1px solid #ddd; padding: 6px; text-align: center; }
 </style>
 </head>
 <body>
@@ -31,178 +33,4 @@
 <header><h2>Öğretmen Takip PRO</h2></header>
 
 <div class="s-bar">
-  <span>Sınıf: <b id="curName">...</b></span>
-  <select id="clsSel" onchange="degis(this.value)" style="width:auto; margin:0; padding:2px;"></select>
-</div>
-
-<nav id="navbar">
-  <button onclick="sekme('p1', this)" class="active">🚫 Yoklama</button>
-  <button onclick="sekme('p2', this)">⭐ Katılım</button>
-  <button onclick="sekme('p3', this)">📝 Ödev</button>
-  <button onclick="sekme('p4', this)">📊 Rapor</button>
-  <button onclick="sekme('p5', this)">⚙️ Yönetim</button>
-</nav>
-
-<div id="p1" class="page active"><div class="card"><input type="date" id="t1" onchange="r()"><div id="l1"></div></div></div>
-<div id="p2" class="page"><div class="card"><select id="s2" onchange="r()"></select><input type="date" id="t2" onchange="r()"><div id="l2"></div></div></div>
-
-<div id="p3" class="page">
-    <div class="card">
-        <h3>Ödev Girişi</h3>
-        <select id="s3" onchange="r()"></select>
-        <input type="date" id="t3" onchange="r()">
-        <input type="text" id="oNote" placeholder="Ödev içeriği/açıklaması yazın..." oninput="noteSave()">
-        <div id="l3"></div>
-    </div>
-    <div class="card" style="border:1.5px solid #ef4444">
-        <h3>🔍 Eksik Ödev Taraması</h3>
-        <button class="btn-m" style="background:#ef4444" onclick="tara()">Sınıfı Tara</button>
-        <div id="lSc" style="font-size:12px;margin-top:10px;color:#b91c1c"></div>
-    </div>
-</div>
-
-<div id="p4" class="page"><div class="card"><h3>Genel Durum</h3><div id="l4"></div></div></div>
-
-<div id="p5" class="page">
-    <div class="card">
-        <h3>Sınıf Ayarları</h3>
-        <input type="text" id="iCN" placeholder="Sınıf Adı">
-        <textarea id="iCS" rows="5" placeholder="Öğrenci Listesi"></textarea>
-        <button class="btn-m" onclick="ekle()">Sınıfı ve Listeyi Kaydet</button>
-    </div>
-    <div class="card">
-        <h3>Ders Listesi</h3>
-        <textarea id="iDS" rows="2" placeholder="Dersler..."></textarea>
-        <button class="btn-m" style="background:#10b981" onclick="dersGuncelle()">Dersleri Güncelle</button>
-    </div>
-    <div class="card">
-        <button onclick="sil()" style="color:red; background:none; border:1px solid red; padding:8px; border-radius:5px; width:100%; font-size:12px;">Mevcut Sınıfı Sil</button>
-    </div>
-</div>
-
-<div class="save-bar"><button class="btn-m" onclick="kaydet()">💾 TÜM VERİLERİ KAYDET</button></div>
-
-<script>
-const oList = ["Ali Ömer ARSLAN","Arda ARSLAN","Ayşe ŞINIK","Barış HALLUM","Beyazıt GÖRKEN","Bilgesu TOPRAK","Bora ALAS","Defne KAYNAR","Derin URAZ","Elif ÇİTKAP","Emir Efe ALPER","Esra DEMİRLİ","Eymen HALICI","Hüma ALTINIŞIK","İpek ELDEK","Irmak ERDEM","Kumsal GÜNDOĞARKEN","Melis KILIÇ","Mert BALCIOĞLU","Musa KARAÖZ","Mustafa DAL","Naz AKGÜN","Nisa YALILAR","Onuralp TOK","Önder TURĞAY","Poyraz SEZGİN","Roza AYDIN","Rüzgar GÜL","Yaz YILMAZ","Yusuf BİRLİK"];
-const dList = ["Türkçe","Matematik","Fen Bilimleri","Sosyal Bilgiler","İngilizce"];
-
-let st = JSON.parse(localStorage.getItem('brans_final_v2')) || {
-    cls: {"4-A": oList},
-    cur: "4-A",
-    ders: dList,
-    db: {v:{}, k:{}, od:{}, notes:{}} // notes alanı eklendi
-};
-
-function sekme(id, btn) {
-    var pgs = document.getElementsByClassName('page');
-    for (var i = 0; i < pgs.length; i++) { pgs[i].style.display = 'none'; }
-    var btns = document.querySelectorAll('nav button');
-    for (var j = 0; j < btns.length; j++) { btns[j].className = ''; }
-    document.getElementById(id).style.display = 'block';
-    btn.className = 'active';
-    if(id==='p4') rRap();
-}
-
-function degis(v) { st.cur = v; save(); location.reload(); }
-
-function ekle() {
-    const n = document.getElementById('iCN').value.trim();
-    const s = document.getElementById('iCS').value.split('\n').filter(x=>x.trim()!=="").sort((a,b)=>a.localeCompare(b,'tr'));
-    if(!n || s.length===0) return alert("Hata!");
-    st.cls[n] = s; st.cur = n; save(); location.reload();
-}
-
-function dersGuncelle() {
-    const d = document.getElementById('iDS').value.split(',').map(x=>x.trim()).filter(x=>x!=="");
-    if(d.length === 0) return alert("Hata!");
-    st.ders = d; save(); location.reload();
-}
-
-function sil() {
-    if(Object.keys(st.cls).length <= 1) return alert("Son sınıf silinemez!");
-    if(confirm(st.cur + " silinecek?")) { delete st.cls[st.cur]; st.cur = Object.keys(st.cls)[0]; save(); location.reload(); }
-}
-
-// Ödev açıklamasını kaydetme fonksiyonu
-function noteSave() {
-    const dO = document.getElementById('s3').value;
-    const tO = document.getElementById('t3').value;
-    if(!dO) return;
-    const key = tO + "_" + dO + "_" + st.cur;
-    st.db.notes[key] = document.getElementById('oNote').value;
-}
-
-function r() {
-    const oL = st.cls[st.cur];
-    const tV = document.getElementById('t1').value, dK = document.getElementById('s2').value, tK = document.getElementById('t2').value, dO = document.getElementById('s3').value, tO = document.getElementById('t3').value;
-    
-    // Yoklama
-    const vK = tV + "_" + st.cur; const vD = st.db.v[vK] || {};
-    document.getElementById('l1').innerHTML = oL.map(s => `<div class="row"><span>${s}</span><div><button class="btn-s ${vD[s]==='y'?'':'on'}" onclick="u('v','${vK}','${s}','v')">VAR</button><button class="btn-s ${vD[s]==='y'?'on':''}" onclick="u('v','${vK}','${s}','y')">YOK</button></div></div>`).join('');
-
-    // Katılım
-    if(dK) {
-        const kK = tK+"_"+dK+"_"+st.cur; const kD = st.db.k[kK] || {};
-        document.getElementById('l2').innerHTML = oL.map(s => `<div class="row"><span>${s}</span><button class="btn-s ${kD[s]?'on':''}" onclick="u('k','${kK}','${s}',${!kD[s]})">${kD[s]?'⭐':'PAS'}</button></div>`).join('');
-    }
-    // Ödev
-    if(dO) {
-        const oK = tO+"_"+dO+"_"+st.cur; const oD = st.db.od[oK] || {};
-        document.getElementById('l3').innerHTML = oL.map(s => `<div class="row"><span>${s}</span><button class="btn-s ${oD[s]?'on':''}" onclick="u('od','${oK}','${s}',${!oD[s]})">${oD[s]?'✅':'YOK'}</button></div>`).join('');
-        // Kayıtlı notu getir
-        document.getElementById('oNote').value = st.db.notes[oK] || "";
-    }
-}
-
-function u(t, k, n, v) { if(!st.db[t][k]) st.db[t][k] = {}; st.db[t][k][n] = v; r(); }
-function save() { localStorage.setItem('brans_final_v2', JSON.stringify(st)); }
-function kaydet() { save(); alert("Kaydedildi!"); }
-
-function rRap() {
-    const oL = st.cls[st.cur];
-    let h = "<table><tr><th>Öğrenci</th><th>YOK</th><th>⭐</th><th>✅</th></tr>";
-    oL.forEach(s => {
-        let y=0, k=0, o=0;
-        Object.entries(st.db.v).forEach(([key, val]) => { if(key.endsWith(st.cur) && val[s]==='y') y++; });
-        Object.entries(st.db.k).forEach(([key, val]) => { if(key.endsWith(st.cur) && val[s]) k++; });
-        Object.entries(st.db.od).forEach(([key, val]) => { if(key.endsWith(st.cur) && val[s]) o++; });
-        h += `<tr><td>${s}</td><td>${y}</td><td>${k}</td><td>${o}</td></tr>`;
-    });
-    document.getElementById('l4').innerHTML = h + "</table>";
-}
-
-function tara() {
-    const oL = st.cls[st.cur]; let h = "";
-    oL.forEach(s => {
-        let e = [];
-        Object.keys(st.db.od).forEach(k => { 
-            if(k.endsWith(st.cur) && st.db.od[k][s] === false) {
-                const note = st.db.notes[k] ? ` <small>(${st.db.notes[k]})</small>` : "";
-                e.push(k.split('_')[0] + " " + k.split('_')[1] + note); 
-            }
-        });
-        if(e.length > 0) h += `<div style='margin-bottom:8px; border-bottom:1px dashed #ddd; padding-bottom:4px;'><b>${s}</b>: <br><span style='font-size:11px'>${e.join(', ')}</span></div>`;
-    });
-    document.getElementById('lSc').innerHTML = h || "Eksik yok.";
-}
-
-window.onload = function() {
-    const t = new Date().toISOString().split('T')[0];
-    document.getElementById('t1').value = document.getElementById('t2').value = document.getElementById('t3').value = t;
-    const sel = document.getElementById('clsSel');
-    Object.keys(st.cls).forEach(c => {
-        const o = document.createElement('option'); o.value = c; o.innerText = c;
-        if(c === st.cur) o.selected = true;
-        sel.appendChild(o);
-    });
-    let opts = '<option value="">-- Ders Seç --</option>' + st.ders.map(d => `<option value="${d}">${d}</option>`).join('');
-    document.getElementById('s2').innerHTML = document.getElementById('s3').innerHTML = opts;
-    document.getElementById('curName').innerText = st.cur;
-    document.getElementById('iCN').value = st.cur;
-    document.getElementById('iCS').value = st.cls[st.cur].join('\n');
-    document.getElementById('iDS').value = st.ders.join(', ');
-    r();
-};
-</script>
-</body>
-</html>
+  <span>Sınıf: <b
