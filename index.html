@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Öğretmen Takip - Dinamik Sürüm</title>
+<title>Öğretmen Takip - Geriye Dönük Takip</title>
 <link rel="manifest" href="manifest.json">
 <style>
   :root { --primary: #2563eb; --success: #16a34a; --danger: #dc2626; --gray: #6b7280; --border: #e5e7eb; }
@@ -24,9 +24,7 @@
   select, input, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ddd; font-family: inherit; }
   .save-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 12px; border-top: 1px solid #ddd; z-index: 1001; }
   .btn-main { width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; margin-top: 5px; }
-  table { width: 100%; border-collapse: collapse; font-size: 11px; }
-  th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-  .tag { display: inline-block; background: #eee; padding: 4px 8px; border-radius: 4px; margin: 2px; font-size: 11px; }
+  .history-box { background: #fff5f5; border: 1px solid #feb2b2; border-radius: 8px; padding: 10px; margin-top: 10px; font-size: 12px; }
 </style>
 </head>
 <body>
@@ -41,71 +39,37 @@
   <button onclick="git('ayarlar', this)">⚙️ Yönetim</button>
 </nav>
 
-<div id="devamsizlik" class="page active">
-  <div class="card">
-    <h3>🚫 Günlük Yoklama</h3>
-    <input type="date" id="dateDev" onchange="renderDev()">
-    <div id="listDev"></div>
-  </div>
-</div>
-
-<div id="katilim" class="page">
-  <div class="card">
-    <h3>⭐ Derse Katılım</h3>
-    <select id="selKatDers" onchange="renderKat()"></select>
-    <input type="date" id="dateKat" onchange="renderKat()">
-    <div id="listKat"></div>
-  </div>
-</div>
-
 <div id="odev" class="page">
   <div class="card">
-    <h3>📝 Ödev Takibi</h3>
+    <h3>📝 Ödev Takibi (Günlük)</h3>
     <select id="selOdevDers" onchange="renderOdev()"></select>
     <input type="date" id="dateOdev" onchange="renderOdev()">
     <div id="listOdev"></div>
   </div>
-</div>
 
-<div id="rapor" class="page">
-  <div class="card">
-    <h3>📊 Raporlar</h3>
-    <button class="btn-main" style="background:#059669; margin-bottom:10px;" onclick="exportExcel()">📥 Excel İndir</button>
-    <div id="listRapor" style="overflow-x:auto;"></div>
+  <div class="card" style="border-top: 4px solid var(--danger);">
+    <h3>🔍 Geriye Dönük Ödev Sorgula</h3>
+    <p style="font-size:11px; color:gray; margin-bottom:8px;">Öğrenci seçerek yapmadığı ödevleri listeleyin:</p>
+    <select id="selOdevSorgu" onchange="sorgulaOdev()"></select>
+    <div id="sorguSonuc"></div>
   </div>
 </div>
 
+<div id="devamsizlik" class="page active"><div class="card"><h3>🚫 Günlük Yoklama</h3><input type="date" id="dateDev" onchange="renderDev()"><div id="listDev"></div></div></div>
+<div id="katilim" class="page"><div class="card"><h3>⭐ Derse Katılım</h3><select id="selKatDers" onchange="renderKat()"></select><input type="date" id="dateKat" onchange="renderKat()"><div id="listKat"></div></div></div>
+<div id="rapor" class="page"><div class="card"><h3>📊 Raporlar</h3><button class="btn-main" style="background:#059669; margin-bottom:10px;" onclick="exportExcel()">📥 Excel İndir</button><div id="listRapor"></div></div></div>
 <div id="ayarlar" class="page">
-  <div class="card">
-    <h3>🏫 Sınıf Ayarları</h3>
-    <input type="text" id="inpCls" placeholder="Sınıf İsmi">
-    <button class="btn-main" onclick="saveConfig()">Sınıf Adını Güncelle</button>
-  </div>
-  
-  <div class="card">
-    <h3>📚 Ders Yönetimi</h3>
-    <p style="font-size:11px; color:gray; margin-bottom:5px;">Dersleri virgülle ayırarak yazın:</p>
-    <textarea id="inpDersler" rows="2"></textarea>
-    <button class="btn-main" onclick="saveDersler()">Ders Listesini Güncelle</button>
-  </div>
-
-  <div class="card">
-    <h3>👥 Öğrenci Listesi Yükle</h3>
-    <p style="font-size:11px; color:gray; margin-bottom:5px;">Her satıra bir isim gelecek şekilde yapıştırın:</p>
-    <textarea id="inpOgrenciler" rows="10" placeholder="Ali Ömer ARSLAN&#10;Arda ARSLAN..."></textarea>
-    <button class="btn-main" style="background:#8b5cf6;" onclick="saveOgrenciler()">Listeyi Kaydet ve Sırala</button>
-  </div>
-
-  <div class="card">
-    <button onclick="fullClear()" style="width:100%; color:red; border:1px solid red; background:none; padding:10px; border-radius:8px; cursor:pointer;">⚠️ Tüm Verileri Sıfırla</button>
-  </div>
+  <div class="card"><h3>🏫 Sınıf Ayarları</h3><input type="text" id="inpCls" placeholder="Sınıf İsmi"><button class="btn-main" onclick="saveConfig()">Güncelle</button></div>
+  <div class="card"><h3>📚 Ders Yönetimi</h3><textarea id="inpDersler" rows="2"></textarea><button class="btn-main" onclick="saveDersler()">Dersleri Güncelle</button></div>
+  <div class="card"><h3>👥 Öğrenci Listesi</h3><textarea id="inpOgrenciler" rows="10"></textarea><button class="btn-main" style="background:#8b5cf6;" onclick="saveOgrenciler()">Listeyi Kaydet</button></div>
+  <div class="card"><button onclick="fullClear()" style="width:100%; color:red; border:1px solid red; background:none; padding:10px; border-radius:8px; cursor:pointer;">⚠️ Sıfırla</button></div>
 </div>
 
-<div class="save-bar"><button class="btn-main" onclick="masterSave()">💾 TÜMÜNÜ KAYDET</button></div>
+<div class="save-bar"><button class="btn-main" onclick="masterSave()">💾 VERİLERİ KAYDET</button></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-// Varsayılan veriler (Sizin listeniz)
+// VARSAYILANLAR
 const defaultStudents = ["Ali Ömer ARSLAN","Arda ARSLAN","Ayşe ŞINIK","Barış HALLUM","Beyazıt GÖRKEN","Bilgesu TOPRAK","Bora ALAS","Defne KAYNAR","Derin URAZ","Elif ÇİTKAP","Emir Efe ALPER","Esra DEMİRLİ","Eymen HALICI","Hüma ALTINIŞIK","İpek ELDEK","Irmak ERDEM","Kumsal GÜNDOĞARKEN","Melis KILIÇ","Mert BALCIOĞLU","Musa KARAÖZ","Mustafa DAL","Naz AKGÜN","Nisa YALILAR","Onuralp TOK","Önder TURĞAY","Poyraz SEZGİN","Roza AYDIN","Rüzgar GÜL","Yaz YILMAZ","Yusuf BİRLİK"];
 const defaultDersler = ["Türkçe","Matematik","Fen Bilimleri","Sosyal Bilgiler","İngilizce"];
 
@@ -115,7 +79,7 @@ let config = JSON.parse(localStorage.getItem('pwa_config') || JSON.stringify({
     clsName: "4-A Sınıfı"
 }));
 
-let db = JSON.parse(localStorage.getItem('pwa_data_v6') || '{"dev":{}, "kat":{}, "odev":{}}');
+let db = JSON.parse(localStorage.getItem('pwa_data_v7') || '{"dev":{}, "kat":{}, "odev":{}}');
 
 window.git = function(id, btn) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -159,9 +123,42 @@ window.renderOdev = function() {
         </div>`).join('');
 };
 
-window.upd = function(t, k, n, v) { if(!db[t][k]) db[t][k] = {}; db[t][k][n] = v; renderDev(); renderKat(); renderOdev(); };
+// YENİ: GERİYE DÖNÜK ÖDEV SORGULAMA
+window.sorgulaOdev = function() {
+    const sName = document.getElementById('selOdevSorgu').value;
+    const resBox = document.getElementById('sorguSonuc');
+    if(!sName) { resBox.innerHTML = ""; return; }
+    
+    let eksikler = [];
+    // db.odev içindeki tüm tarih_ders anahtarlarını tara
+    Object.keys(db.odev).forEach(key => {
+        const [tarih, ders] = key.split('_');
+        // Eğer o tarihte/derste bu öğrenci false (veya hiç yoksa) ve veri girişi yapılmışsa
+        if(db.odev[key][sName] === false) {
+            eksikler.push(`<b>${tarih}</b> - ${ders}`);
+        }
+    });
 
-window.masterSave = function() { localStorage.setItem('pwa_data_v6', JSON.stringify(db)); alert("Veriler Kaydedildi!"); };
+    if(eksikler.length > 0) {
+        resBox.innerHTML = `<div class="history-box">
+            <p style="color:var(--danger); font-weight:bold; margin-bottom:5px;">⚠️ Yapılmayan Ödevler (${eksikler.length} Adet):</p>
+            ${eksikler.reverse().join('<br>')}
+        </div>`;
+    } else {
+        resBox.innerHTML = `<div class="history-box" style="background:#f0fff4; border-color:#9ae6b4; color:#2f855a;">
+            ✅ Bu öğrencinin sisteme kayıtlı eksik ödevi bulunmamaktadır.
+        </div>`;
+    }
+};
+
+window.upd = function(t, k, n, v) { 
+    if(!db[t][k]) db[t][k] = {}; 
+    db[t][k][n] = v; 
+    renderDev(); renderKat(); renderOdev(); 
+    if(t === 'odev') sorgulaOdev();
+};
+
+window.masterSave = function() { localStorage.setItem('pwa_data_v7', JSON.stringify(db)); alert("Kaydedildi!"); };
 
 window.saveConfig = function() { config.clsName = document.getElementById('inpCls').value; saveAll(); };
 window.saveDersler = function() { config.dersler = document.getElementById('inpDersler').value.split(',').map(x => x.trim()); saveAll(); };
@@ -169,7 +166,6 @@ window.saveOgrenciler = function() {
     config.students = document.getElementById('inpOgrenciler').value.split('\n').filter(x => x.trim() !== "").sort((a,b) => a.localeCompare(b, 'tr')); 
     saveAll(); 
 };
-
 function saveAll() { localStorage.setItem('pwa_config', JSON.stringify(config)); location.reload(); }
 
 window.renderRapor = function() {
@@ -190,29 +186,21 @@ window.exportExcel = function() {
         Object.values(db.dev).forEach(d => { if(d[s]==='yok') y++; });
         Object.values(db.kat).forEach(l => { if(l[s]) k++; });
         Object.values(db.odev).forEach(l => { if(l[s]) o++; });
-        return {"Öğrenci": s, "Yoklama (YOK)": y, "Yıldız": k, "Ödev Tamam": o};
+        return {"Öğrenci": s, "Yoklama (YOK)": y, "Yıldız": k, "Ödev": o};
     });
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Sınıf Raporu");
+    XLSX.utils.book_append_sheet(wb, ws, "Rapor");
     XLSX.writeFile(wb, `${config.clsName}_Rapor.xlsx`);
 };
 
-window.fullClear = function() { if(confirm("TÜM VERİLER VE AYARLAR SİLİNSİN Mİ?")) { localStorage.clear(); location.reload(); } };
+window.fullClear = function() { if(confirm("SİLİNSİN Mİ?")) { localStorage.clear(); location.reload(); } };
 
 document.addEventListener('DOMContentLoaded', () => {
     const t = new Date().toISOString().split('T')[0];
     ['dateDev','dateKat','dateOdev'].forEach(id => document.getElementById(id).value = t);
-    
     let opts = '<option value="">-- Ders Seç --</option>' + config.dersler.map(d => `<option value="${d}">${d}</option>`).join('');
     ['selKatDers','selOdevDers'].forEach(id => document.getElementById(id).innerHTML = opts);
     
-    document.getElementById('clsTitle').innerText = config.clsName;
-    document.getElementById('inpCls').value = config.clsName;
-    document.getElementById('inpDersler').value = config.dersler.join(', ');
-    document.getElementById('inpOgrenciler').value = config.students.join('\n');
-    renderDev();
-});
-</script>
-</body>
-</html>
+    // Sorgu için öğrenci listesi
+    document.getElementById('selOdevSorgu').innerHTML =
