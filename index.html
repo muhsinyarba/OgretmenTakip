@@ -3,26 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Öğretmen Takip PRO</title>
+<title>Öğretmen Takip PRO - Raporlama</title>
 <style>
   :root { --p: #2563eb; --s: #16a34a; --d: #ef4444; --w: #f59e0b; --g: #64748b; }
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
   body { background: #f0f4ff; display: flex; flex-direction: column; height: 100vh; overflow: hidden; position: fixed; width: 100%; }
   
   header { background: var(--p); color: white; padding: 10px; text-align: center; flex-shrink: 0; font-size: 15px; font-weight: bold; }
-  
   .top-panel { background: #0f172a; color: white; padding: 8px; flex-shrink: 0; z-index: 1000; }
   .s-bar { display: flex; justify-content: space-between; align-items: center; font-size: 11px; margin-bottom: 6px; }
   .btn-save-top { width: 100%; padding: 10px; border-radius: 6px; border: none; background: var(--s); color: white; font-weight: bold; cursor: pointer; font-size: 13px; }
 
   .main-container { display: flex; flex: 1; overflow: hidden; }
-  
-  /* SOL MENÜ */
-  nav { width: 65px; background: #1e3a8a; display: flex; flex-direction: column; flex-shrink: 0; border-right: 1px solid #1e3a8a; }
+  nav { width: 65px; background: #1e3a8a; display: flex; flex-direction: column; flex-shrink: 0; }
   nav button { padding: 12px 2px; border: none; background: none; color: white; font-size: 9px; cursor: pointer; border-bottom: 1px solid #2563eb; opacity: 0.7; }
   nav button.active { background: var(--p); opacity: 1; border-left: 4px solid white; }
 
-  /* İÇERİK */
   .content { flex: 1; overflow-y: auto; padding: 8px; -webkit-overflow-scrolling: touch; }
   .page { display: none; padding-bottom: 50px; }
   .page.active { display: block; }
@@ -30,19 +26,28 @@
   .card { background: white; border-radius: 8px; padding: 10px; margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
   h3 { font-size: 12px; margin-bottom: 6px; color: var(--p); border-bottom: 1px solid #eee; padding-bottom: 3px; }
   
-  /* ÖĞRENCİ ADLARI KÜÇÜK */
   .row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #f8fafc; }
-  .stu-name { font-size: 10.5px; font-weight: 500; color: #334155; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 4px; }
+  .stu-name { font-size: 10.5px; font-weight: 500; color: #334155; flex: 1; overflow: hidden; text-overflow: ellipsis; padding-right: 4px; }
   
   .btn-s { padding: 5px 6px; border-radius: 4px; border: 1px solid #cbd5e1; background: white; font-weight: bold; font-size: 9px; min-width: 32px; height: 28px; cursor: pointer; }
   .btn-s.on { background: var(--p); color: white; border-color: var(--p); }
   .btn-s.half { background: var(--w); color: white; border-color: var(--w); }
   .btn-s.off { background: var(--d); color: white; border-color: var(--d); }
   
-  select, input, textarea { width: 100%; padding: 8px; margin-bottom: 6px; border-radius: 5px; border: 1px solid #cbd5e1; font-size: 12px; -webkit-appearance: none; }
-  .btn-m { width: 100%; padding: 12px; border-radius: 6px; border: none; background: var(--p); color: white; font-weight: bold; cursor: pointer; font-size: 13px; }
-  table { width: 100%; border-collapse: collapse; font-size: 10px; }
+  select, input, textarea { width: 100%; padding: 8px; margin-bottom: 6px; border-radius: 5px; border: 1px solid #cbd5e1; font-size: 12px; }
+  .btn-m { width: 100%; padding: 12px; border-radius: 6px; border: none; background: var(--p); color: white; font-weight: bold; cursor: pointer; }
+  
+  table { width: 100%; border-collapse: collapse; font-size: 10px; margin-top: 5px; }
   th, td { border: 1px solid #e2e8f0; padding: 6px; text-align: center; }
+  th { background: #f8fafc; }
+
+  /* Yazdırma Ayarı */
+  @media print {
+    header, nav, .top-panel, .save-bar, .btn-m { display: none !important; }
+    .main-container, .content, .page { display: block !important; overflow: visible !important; height: auto !important; position: static !important; }
+    body { background: white; position: static; height: auto; }
+    .card { box-shadow: none; border: 1px solid #eee; }
+  }
 </style>
 </head>
 <body>
@@ -74,22 +79,33 @@
         <div class="card"><h3>Ödev</h3><select id="s3" onchange="window.r()"></select><input type="date" id="t3" onchange="window.r()"><input type="text" id="oN" placeholder="Ödev Konusu" oninput="window.nS('notes','oN','t3','s3')"><div id="l3"></div></div>
         <div class="card"><button class="btn-m" style="background:var(--d)" onclick="window.tara()">Eksik Ödev Tara</button><div id="lSc" style="margin-top:10px; font-size:10px"></div></div>
     </div>
-    <div id="p6" class="page"><div class="card"><h3>Sözlü</h3><select id="s6" onchange="window.r()"></select><input type="date" id="t6" onchange="window.r()"><input type="text" id="sN" placeholder="Konu (Örn: Simetri)" oninput="window.nS('szNotes','sN','t6','s6')"><div id="l6"></div></div></div>
-    <div id="p4" class="page"><div class="card"><h3>Rapor</h3><div id="l4"></div></div></div>
+    <div id="p6" class="page"><div class="card"><h3>Sözlü</h3><select id="s6" onchange="window.r()"></select><input type="date" id="t6" onchange="window.r()"><input type="text" id="sN" placeholder="Sözlü Konusu" oninput="window.nS('szNotes','sN','t6','s6')"><div id="l6"></div></div></div>
+    
+    <div id="p4" class="page">
+        <div class="card">
+            <h3>Rapor İşlemleri</h3>
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <button onclick="window.exportExcel()" style="flex:1; background:#16a34a; border:none; color:white; padding:12px; border-radius:6px; font-weight:bold; cursor:pointer;">📥 Excel İndir</button>
+                <button onclick="window.printPDF()" style="flex:1; background:#dc2626; border:none; color:white; padding:12px; border-radius:6px; font-weight:bold; cursor:pointer;">🖨️ PDF / Yazdır</button>
+            </div>
+            <div id="l4" style="overflow-x:auto;"></div>
+        </div>
+    </div>
+
     <div id="p5" class="page">
         <div class="card"><h3>Sınıf Ekle</h3><input type="text" id="iCN" placeholder="Sınıf Adı"><textarea id="iCS" rows="4" placeholder="Öğrenciler"></textarea><button class="btn-m" onclick="window.ekleSınıf()">Sınıfı Kaydet</button></div>
         <div class="card"><h3>Ders Ayarı</h3><textarea id="iDS" rows="2"></textarea><button class="btn-m" onclick="window.dersGuncelle()">Güncelle</button></div>
-        <div class="card"><button onclick="if(confirm('Tüm veriler temizlenecek!')){localStorage.clear();location.reload();}" style="color:red; border:none; background:none; width:100%; font-size:10px;">⚠️ HAFIZAYI SIFIRLA</button></div>
     </div>
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 // VERİLER
 const oList = ["Ali Ömer ARSLAN","Arda ARSLAN","Ayşe ŞINIK","Barış HALLUM","Beyazıt GÖRKEN","Bilgesu TOPRAK","Bora ALAS","Defne KAYNAR","Derin URAZ","Elif ÇİTKAP","Emir Efe ALPER","Esra DEMİRLİ","Eymen HALICI","Hüma ALTINIŞIK","İpek ELDEK","Irmak ERDEM","Kumsal GÜNDOĞARKEN","Melis KILIÇ","Mert BALCIOĞLU","Musa KARAÖZ","Mustafa DAL","Naz AKGÜN","Nisa YALILAR","Onuralp TOK","Önder TURĞAY","Poyraz SEZGİN","Roza AYDIN","Rüzgar GÜL","Yaz YILMAZ","Yusuf BİRLİK"];
 const dList = ["Türkçe","Matematik","Fen","Sosyal","İngilizce"];
 
-let st = JSON.parse(localStorage.getItem('teacher_pro_v15')) || {
+let st = JSON.parse(localStorage.getItem('teacher_pro_v16')) || {
     cls: {"4-A": oList}, cur: "4-A", ders: dList,
     db: {v:{}, k:{}, od:{}, notes:{}, sz:{}, szNotes:{}}
 };
@@ -105,7 +121,7 @@ window.tab = function(id, btn) {
 };
 
 window.degisSınıf = function(v) { st.cur = v; window.save(); location.reload(); };
-window.save = function() { localStorage.setItem('teacher_pro_v15', JSON.stringify(st)); };
+window.save = function() { localStorage.setItem('teacher_pro_v16', JSON.stringify(st)); };
 window.kaydet = function() { window.save(); alert("Başarıyla Kaydedildi!"); };
 
 window.nS = function(f, i, t, s) {
@@ -116,10 +132,8 @@ window.nS = function(f, i, t, s) {
 window.r = function() {
     const oL = st.cls[st.cur] || [];
     const tV = document.getElementById('t1').value, dK = document.getElementById('s2').value, tK = document.getElementById('t2').value, dO = document.getElementById('s3').value, tO = document.getElementById('t3').value, dS = document.getElementById('s6').value, tS = document.getElementById('t6').value;
-    
     const vK = tV + "_" + st.cur; const vD = st.db.v[vK] || {};
     document.getElementById('l1').innerHTML = oL.map(s => `<div class="row"><span class="stu-name">${s}</span><div><button class="btn-s ${vD[s]==='y'?'':'on'}" onclick="window.u('v','${vK}','${s}','v')">VAR</button><button class="btn-s ${vD[s]==='y'?'on':''}" onclick="window.u('v','${vK}','${s}','y')">YOK</button></div></div>`).join('');
-
     if(dK) { const kK = tK+"_"+dK+"_"+st.cur, kD = st.db.k[kK] || {}; document.getElementById('l2').innerHTML = oL.map(s => `<div class="row"><span class="stu-name">${s}</span><button class="btn-s ${kD[s]?'on':''}" onclick="window.u('k','${kK}','${s}',${!kD[s]})">${kD[s]?'⭐':'PAS'}</button></div>`).join(''); }
     if(dO) { const oK = tO+"_"+dO+"_"+st.cur, oD = st.db.od[oK] || {}; document.getElementById('l3').innerHTML = oL.map(s => `<div class="row"><span class="stu-name">${s}</span><button class="btn-s ${oD[s]?'on':''}" onclick="window.u('od','${oK}','${s}',${!oD[s]})">${oD[s]?'✅':'YOK'}</button></div>`).join(''); document.getElementById('oN').value = st.db.notes[oK] || ""; }
     if(dS) {
@@ -133,7 +147,7 @@ window.u = function(t, k, n, v) { if(!st.db[t][k]) st.db[t][k] = {}; st.db[t][k]
 
 window.rRap = function() {
     const oL = st.cls[st.cur];
-    let h = "<table><tr><th>Öğrenci</th><th>YOK</th><th>⭐</th><th>✅</th><th>+</th></tr>";
+    let h = "<table id='reportTable'><tr><th>Öğrenci</th><th>YOK</th><th>⭐</th><th>✅</th><th>+</th></tr>";
     oL.forEach(s => {
         let y=0, k=0, o=0, p=0;
         Object.entries(st.db.v).forEach(([k,v])=>{ if(k.endsWith(st.cur) && v[s]==='y') y++; });
@@ -145,10 +159,20 @@ window.rRap = function() {
     document.getElementById('l4').innerHTML = h + "</table>";
 };
 
+window.exportExcel = function() {
+    const table = document.getElementById("reportTable");
+    const ws = XLSX.utils.table_to_sheet(table);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Sınıf Raporu");
+    XLSX.writeFile(wb, `${st.cur}_Sınıf_Raporu.xlsx`);
+};
+
+window.printPDF = function() { window.print(); };
+
 window.ekleSınıf = function() {
     const n = document.getElementById('iCN').value.trim();
     const s = document.getElementById('iCS').value.split('\n').filter(x=>x.trim()!=="").sort((a,b)=>a.localeCompare(b,'tr'));
-    if(!n || s.length===0) return alert("Eksik bilgi!");
+    if(!n || s.length===0) return alert("Hata!");
     st.cls[n] = s; st.cur = n; window.save(); location.reload();
 };
 
