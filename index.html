@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Öğretmen Takip PRO - V24</title>
+<title>Öğretmen Takip PRO - V24 Raporlu</title>
 <style>
   :root { --p: #2563eb; --s: #16a34a; --d: #ef4444; --w: #f59e0b; }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
@@ -28,11 +28,20 @@
   select, input, textarea { width: 100%; padding: 10px; margin-bottom: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; }
   #mdl { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; padding:20px; display: flex; align-items: center; justify-content: center; }
   .mdl-c { background:white; border-radius:12px; padding:20px; width: 90%; max-width:400px; position:relative; }
+  table { width: 100%; border-collapse: collapse; font-size: 10px; text-align: center; }
+  th, td { border: 1px solid #ddd; padding: 5px; }
+
+  /* Yazdırma Modu */
+  @media print {
+    header, nav, .top-panel, .btn-m { display: none !important; }
+    .main-container, .content, .page { display: block !important; position: static !important; overflow: visible !important; }
+    body { background: white; }
+  }
 </style>
 </head>
 <body>
 
-<header>Öğretmen Takip PRO - 4B Özel</header>
+<header>Öğretmen Takip PRO - 4B</header>
 
 <div class="top-panel">
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:11px;">
@@ -57,16 +66,29 @@
     <div id="p2" class="page"><div class="card"><h3>Katılım</h3><select id="s2" onchange="r()"></select><div id="l2"></div></div></div>
     <div id="p3" class="page"><div class="card"><h3>Ödev</h3><select id="s3" onchange="r()"></select><input type="text" id="oN" placeholder="Ödev Konusu" oninput="nS()"><div id="l3"></div></div></div>
     <div id="p6" class="page"><div class="card"><h3>Sözlü</h3><select id="s6" onchange="r()"></select><input type="text" id="sN" placeholder="Sözlü Konusu" oninput="nS()"><div id="l6"></div></div></div>
-    <div id="p4" class="page"><div class="card"><h3>Genel Rapor</h3><div id="l4" style="overflow-x:auto"></div></div></div>
+    
+    <div id="p4" class="page">
+        <div class="card">
+            <h3>Genel Rapor ve İndirme</h3>
+            <div style="display:flex; gap:5px; margin-bottom:10px;">
+                <button class="btn-m" style="background:var(--s); flex:1" onclick="exportExcel()">📥 EXCEL</button>
+                <button class="btn-m" style="background:var(--d); flex:1" onclick="window.print()">🖨️ PDF</button>
+            </div>
+            <div id="l4" style="overflow-x:auto"></div>
+        </div>
+    </div>
+
     <div id="p5" class="page">
-        <div class="card"><h3>Sınıf Ekle</h3><input type="text" id="iCN" placeholder="Sınıf Adı"><textarea id="iCS" rows="4" placeholder="Öğrenci Listesi"></textarea><button class="btn-m" onclick="saveCls()">Kaydet</button></div>
+        <div class="card"><h3>Sınıf Ekle</h3><input type="text" id="iCN" placeholder="Sınıf Adı"><textarea id="iCS" rows="4"></textarea><button class="btn-m" onclick="saveCls()">Kaydet</button></div>
         <div class="card"><h3>Ders Ayarı</h3><textarea id="iDS" rows="2"></textarea><button class="btn-m" style="background:var(--s)" onclick="saveDers()">Dersleri Kaydet</button></div>
-        <div class="card"><button class="btn-m" style="background:var(--d)" onclick="if(confirm('TÜM VERİLER SİLİNSİN Mİ?')){localStorage.clear();location.reload();}">⚠️ SIFIRLA</button></div>
+        <div class="card"><button class="btn-m" style="background:var(--d)" onclick="if(confirm('SIFIRLANSIN MI?')){localStorage.clear();location.reload();}">⚠️ SIFIRLA</button></div>
     </div>
   </div>
 </div>
 
 <div id="mdl" style="display:none" onclick="this.style.display='none'"><div class="mdl-c" id="mI" onclick="event.stopPropagation()"></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
 const defO = ["Ali Ömer ARSLAN","Arda ARSLAN","Ayşe ŞINIK","Barış HALLUM","Beyazıt GÖRKEN","Bilgesu TOPRAK","Bora ALAS","Defne KAYNAR","Derin URAZ","Elif ÇİTKAP","Emir Efe ALPER","Esra DEMİRLİ","Eymen HALICI","Hüma ALTINIŞIK","İpek ELDEK","Irmak ERDEM","Kumsal GÜNDOĞARKEN","Melis KILIÇ","Mert BALCIOĞLU","Musa KARAÖZ","Mustafa DAL","Naz AKGÜN","Nisa YALILAR","Onuralp TOK","Önder TURĞAY","Poyraz SEZGİN","Roza AYDIN","Rüzgar GÜL","Yaz YILMAZ","Yusuf BİRLİK"];
@@ -85,13 +107,13 @@ function pg(id, btn) {
     if(id==='p4') rRap();
 }
 
-function sv() { localStorage.setItem('ok_v24', JSON.stringify(st)); alert("Başarıyla Kaydedildi!"); }
+function sv() { localStorage.setItem('ok_v24', JSON.stringify(st)); alert("Kaydedildi!"); }
 function degisSinif(v) { st.cur = v; sv(); location.reload(); }
 
 function saveCls() {
     const n = document.getElementById('iCN').value.trim();
     const s = document.getElementById('iCS').value.split('\n').filter(x=>x.trim()!=="").sort((a,b)=>a.localeCompare(b,'tr'));
-    if(!n || s.length===0) return alert("Eksik bilgi!");
+    if(!n || s.length===0) return alert("Hata!");
     st.cls[n] = s; st.cur = n; sv(); location.reload();
 }
 
@@ -102,74 +124,4 @@ function saveDers() {
 
 function nS() {
     const dO = document.getElementById('s3').value; const dS = document.getElementById('s6').value;
-    if(dO) st.db.notes[dO + "_" + st.cur] = document.getElementById('oN').value;
-    if(dS) st.db.szNotes[dS + "_" + st.cur] = document.getElementById('sN').value;
-}
-
-function u(t, k, n, v) { 
-    const key = k + "_" + st.cur;
-    if(!st.db[t][key]) st.db[t][key] = {}; 
-    st.db[t][key][n] = v; 
-    r(); 
-}
-
-function r() {
-    const oL = st.cls[st.cur] || [];
-    const tV = document.getElementById('t1').value, dK = document.getElementById('s2').value, dO = document.getElementById('s3').value, dS = document.getElementById('s6').value;
-    
-    document.getElementById('l1').innerHTML = oL.map(s => `<div class="row"><span class="stu-name" onclick="kart('${s}')">${s}</span><div><button class="btn-s ${st.db.v[tV + "_" + st.cur]?.[s]==='y'?'':'on'}" onclick="u('v','${tV}','${s}','v')">VAR</button><button class="btn-s ${st.db.v[tV + "_" + st.cur]?.[s]==='y'?'on':''}" onclick="u('v','${tV}','${s}','y')">YOK</button></div></div>`).join('');
-    
-    if(dK) document.getElementById('l2').innerHTML = oL.map(s => `<div class="row"><span class="stu-name" onclick="kart('${s}')">${s}</span><button class="btn-s ${st.db.k[dK + "_" + st.cur]?.[s]?'on':''}" onclick="u('k','${dK}','${s}',${!st.db.k[dK + "_" + st.cur]?.[s]})">${st.db.k[dK + "_" + st.cur]?.[s]?'⭐':'PAS'}</button></div>`).join('');
-    
-    if(dO) {
-        document.getElementById('l3').innerHTML = oL.map(s => `<div class="row"><span class="stu-name" onclick="kart('${s}')">${s}</span><button class="btn-s ${st.db.od[dO + "_" + st.cur]?.[s]?'on':''}" onclick="u('od','${dO}','${s}',${!st.db.od[dO + "_" + st.cur]?.[s]})">${st.db.od[dO + "_" + st.cur]?.[s]?'✅':'YOK'}</button></div>`).join('');
-        document.getElementById('oN').value = st.db.notes[dO + "_" + st.cur] || "";
-    }
-    
-    if(dS) {
-        document.getElementById('l6').innerHTML = oL.map(s => `<div class="row"><span class="stu-name" onclick="kart('${s}')">${s}</span><div><button class="btn-s ${st.db.sz[dS + "_" + st.cur]?.[s]==='p'?'on':''}" onclick="u('sz','${dS}','${s}','p')">+</button><button class="btn-s ${st.db.sz[dS + "_" + st.cur]?.[s]==='h'?'half':''}" onclick="u('sz','${dS}','${s}','h')">+/-</button><button class="btn-s ${st.db.sz[dS + "_" + st.cur]?.[s]==='e'?'off':''}" onclick="u('sz','${dS}','${s}','e')">-</button></div></div>`).join('');
-        document.getElementById('sN').value = st.db.szNotes[dS + "_" + st.cur] || "";
-    }
-}
-
-function kart(n) {
-    let y=0, k=0, o=0, p=0;
-    Object.entries(st.db.v).forEach(([key,v]) => { if(key.endsWith(st.cur) && v[n]==='y') y++; });
-    Object.entries(st.db.k).forEach(([key,v]) => { if(key.endsWith(st.cur) && v[n]) k++; });
-    Object.entries(st.db.od).forEach(([key,v]) => { if(key.endsWith(st.cur) && v[n]) o++; });
-    Object.entries(st.db.sz).forEach(([key,v]) => { if(key.endsWith(st.cur) && v[n]==='p') p++; });
-    document.getElementById('mI').innerHTML = `<h3>${n}</h3><hr><br><p><b>Yokluk Toplamı:</b> ${y} Gün</p><p><b>Derse Katılım:</b> ${k} Yıldız</p><p><b>Tamamlanan Ödev:</b> ${o}</p><p><b>Sözlü Notu (+):</b> ${p}</p><br><button class="btn-m" onclick="document.getElementById('mdl').style.display='none'">Kapat</button>`;
-    document.getElementById('mdl').style.display='flex';
-}
-
-function rRap() {
-    let h = "<table border='1' style='width:100%; border-collapse:collapse; font-size:10px; text-align:center;'><tr><th style='padding:5px'>Öğrenci Adı</th><th>Y</th><th>⭐</th><th>✅</th><th>+</th></tr>";
-    st.cls[st.cur].forEach(s => {
-        let y=0, k=0, o=0, p=0;
-        Object.entries(st.db.v).forEach(([key,v])=>{ if(key.endsWith(st.cur) && v[s]==='y') y++; });
-        Object.entries(st.db.k).forEach(([key,v])=>{ if(key.endsWith(st.cur) && v[s]) k++; });
-        Object.entries(st.db.od).forEach(([key,v])=>{ if(key.endsWith(st.cur) && v[s]) o++; });
-        Object.entries(st.db.sz).forEach(([key,v])=>{ if(key.endsWith(st.cur) && v[s]==='p') p++; });
-        h += `<tr><td style='text-align:left; padding:4px'>${s}</td><td>${y}</td><td>${k}</td><td>${o}</td><td>${p}</td></tr>`;
-    });
-    document.getElementById('l4').innerHTML = h + "</table>";
-}
-
-window.onload = function() {
-    document.getElementById('t1').value = new Date().toISOString().split('T')[0];
-    const sel = document.getElementById('clsSel');
-    Object.keys(st.cls).forEach(c => {
-        const o = document.createElement('option'); o.value = c; o.text = c;
-        if(c === st.cur) o.selected = true; sel.add(o);
-    });
-    let opt = '<option value="">-Seç-</option>' + st.ders.map(d => `<option value="${d}">${d}</option>`).join('');
-    ['s2','s3','s6'].forEach(id => document.getElementById(id).innerHTML = opt);
-    document.getElementById('curDisplay').innerText = st.cur;
-    document.getElementById('iCN').value = st.cur;
-    document.getElementById('iCS').value = (st.cls[st.cur] || []).join('\n');
-    document.getElementById('iDS').value = st.ders.join(', ');
-    r();
-};
-</script>
-</body>
-</html>
+    if(
