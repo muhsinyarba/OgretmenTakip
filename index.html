@@ -3,38 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Öğretmen Takip PRO - V20</title>
+<title>Öğretmen Takip PRO</title>
 <style>
-  :root { --p: #2563eb; --s: #16a34a; --d: #ef4444; --w: #f59e0b; }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-  body { background: #f0f4ff; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-  header { background: var(--p); color: white; padding: 10px; text-align: center; font-size: 14px; font-weight: bold; }
-  .top-panel { background: #1e293b; color: white; padding: 8px; flex-shrink: 0; }
+  body { background: #f0f4ff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+  header { background: #2563eb; color: white; padding: 10px; text-align: center; font-size: 14px; font-weight: bold; }
+  .top-panel { background: #1e293b; color: white; padding: 10px; flex-shrink: 0; text-align: center; }
   .main-container { display: flex; flex: 1; overflow: hidden; }
-  nav { width: 60px; background: #1e3a8a; display: flex; flex-direction: column; flex-shrink: 0; }
-  nav button { padding: 15px 2px; border: none; background: none; color: white; font-size: 9px; cursor: pointer; border-bottom: 1px solid #2563eb; }
-  nav button.active { background: var(--p); border-left: 3px solid white; }
-  .content { flex: 1; overflow-y: auto; padding: 10px; padding-bottom: 60px; }
+  /* SOL MENÜ */
+  nav { width: 70px; background: #1e3a8a; display: flex; flex-direction: column; flex-shrink: 0; }
+  nav button { padding: 15px 2px; border: none; background: none; color: white; font-size: 10px; cursor: pointer; border-bottom: 1px solid #2563eb; }
+  nav button.active { background: #2563eb; border-left: 4px solid white; }
+  /* İÇERİK */
+  .content { flex: 1; overflow-y: auto; padding: 10px; }
   .page { display: none; }
   .page.active { display: block; }
   .card { background: white; border-radius: 8px; padding: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-  .row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; }
-  
-  /* ÖĞRENCİ ADLARI AKTİF VE KÜÇÜK */
-  .stu-name { font-size: 10.5px; flex: 1; color: var(--p); font-weight: bold; text-decoration: underline; cursor: pointer; }
-  
-  .btn-s { padding: 6px 8px; border-radius: 4px; border: 1px solid #ddd; font-size: 9px; min-width: 32px; background: white; }
-  .btn-s.on { background: var(--p); color: white; }
-  .btn-s.half { background: var(--w); color: white; }
-  .btn-s.off { background: var(--d); color: white; }
-  select, input, textarea { width: 100%; padding: 10px; margin-bottom: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; }
-  .btn-m { width: 100%; padding: 12px; border-radius: 6px; border: none; background: var(--p); color: white; font-weight: bold; cursor: pointer; }
-
-  /* BİREYSEL RAPOR MODAL */
+  .row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+  .stu-name { font-size: 11px; color: #2563eb; text-decoration: underline; font-weight: bold; }
+  .btn-s { padding: 8px; border-radius: 4px; border: 1px solid #ddd; font-size: 10px; min-width: 35px; background: white; }
+  .btn-s.on { background: #2563eb; color: white; }
+  .btn-s.half { background: #f59e0b; color: white; }
+  .btn-s.off { background: #ef4444; color: white; }
+  .btn-m { width: 100%; padding: 12px; border-radius: 6px; border: none; background: #2563eb; color: white; font-weight: bold; margin-bottom: 10px; }
   #mdl { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; padding:20px; }
-  .mdl-c { background:white; border-radius:12px; padding:20px; max-width:400px; margin:auto; position:relative; }
-  .stat { display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin:15px 0; }
-  .box { padding:10px; border-radius:6px; text-align:center; color:white; font-size:12px; font-weight:bold; }
+  .mdl-c { background:white; border-radius:12px; padding:20px; margin:auto; }
 </style>
 </head>
 <body>
@@ -42,136 +35,102 @@
 <header>Öğretmen Takip PRO</header>
 
 <div class="top-panel">
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; font-size:11px;">
-    <span>Sınıf: <b id="curDisplay">...</b></span>
-    <select id="clsSel" onchange="degisSınıf(this.value)" style="width:auto; margin:0; padding:2px; font-size:10px;"></select>
-  </div>
-  <button class="btn-m" style="background:var(--s); padding:8px" onclick="kaydetHerSey()">💾 TÜMÜNÜ KAYDET</button>
+  <button class="btn-m" style="background:#16a34a; margin:0;" onclick="sv()">💾 TÜMÜNÜ KAYDET</button>
 </div>
 
 <div class="main-container">
   <nav id="sidebar">
-    <button onclick="tab('p1', this)" class="active">Yoklama</button>
-    <button onclick="tab('p2', this)">Katılım</button>
-    <button onclick="tab('p3', this)">Ödev</button>
-    <button onclick="tab('p6', this)">Sözlü</button>
-    <button onclick="tab('p4', this)">Rapor</button>
-    <button onclick="tab('p5', this)">Ayar</button>
+    <button onclick="pg('p1', this)" class="active">Yoklama</button>
+    <button onclick="pg('p2', this)">Katılım</button>
+    <button onclick="pg('p3', this)">Ödev</button>
+    <button onclick="pg('p6', this)">Sözlü</button>
+    <button onclick="pg('p4', this)">Rapor</button>
+    <button onclick="pg('p5', this)">Ayar</button>
   </nav>
 
   <div class="content">
     <div id="p1" class="page active"><div class="card"><h3>Yoklama</h3><input type="date" id="t1" onchange="r()"><div id="l1"></div></div></div>
-    <div id="p2" class="page"><div class="card"><h3>Katılım</h3><select id="s2" onchange="r()"></select><input type="date" id="t2" onchange="r()"><div id="l2"></div></div></div>
-    <div id="p3" class="page"><div class="card"><h3>Ödev</h3><select id="s3" onchange="r()"></select><input type="date" id="t3" onchange="r()"><input type="text" id="oN" placeholder="Konu" oninput="notAl('notes','oN','t3','s3')"><div id="l3"></div></div></div>
-    <div id="p6" class="page"><div class="card"><h3>Sözlü</h3><select id="s6" onchange="r()"></select><input type="date" id="t6" onchange="r()"><input type="text" id="sN" placeholder="Konu" oninput="notAl('szNotes','sN','t6','s6')"><div id="l6"></div></div></div>
-    <div id="p4" class="page"><div class="card"><h3>Genel Rapor</h3><div id="l4"></div></div></div>
-    <div id="p5" class="page">
-        <div class="card"><h3>Sınıf Ayarı</h3><input type="text" id="iCN"><textarea id="iCS" rows="5"></textarea><button class="btn-m" onclick="clsKaydet()">Sınıfı Kaydet</button></div>
-        <div class="card"><h3>Ders Ayarı</h3><textarea id="iDS" rows="2"></textarea><button class="btn-m" style="background:var(--s)" onclick="dersKaydet()">Dersleri Kaydet</button></div>
-    </div>
+    <div id="p2" class="page"><div class="card"><h3>Katılım</h3><select id="s2" onchange="r()"></select><div id="l2"></div></div></div>
+    <div id="p3" class="page"><div class="card"><h3>Ödev</h3><select id="s3" onchange="r()"></select><input type="text" id="oN" placeholder="Konu" oninput="nS()"><div id="l3"></div></div></div>
+    <div id="p6" class="page"><div class="card"><h3>Sözlü</h3><select id="s6" onchange="r()"></select><input type="text" id="sN" placeholder="Konu" oninput="nS()"><div id="l6"></div></div></div>
+    <div id="p4" class="page"><div class="card"><h3>Rapor</h3><div id="l4"></div></div></div>
+    <div id="p5" class="page"><div class="card"><h3>Ayar</h3><button class="btn-m" style="background:red" onclick="localStorage.clear();location.reload();">HAFIZAYI SIFIRLA</button></div></div>
   </div>
 </div>
 
-<div id="mdl">
-    <div class="mdl-c">
-        <h2 id="mdlT" style="color:var(--p); font-size:16px; border-bottom:2px solid #eee; margin-bottom:10px;">İsim</h2>
-        <div class="stat">
-            <div class="box" style="background:var(--d)">Yok: <span id="mY">0</span></div>
-            <div class="box" style="background:var(--p)">Yıldız: <span id="mK">0</span></div>
-            <div class="box" style="background:var(--s)">Ödev: <span id="mO">0</span></div>
-            <div class="box" style="background:var(--w)">Sözlü: <span id="mS">0</span></div>
-        </div>
-        <div id="mDet" style="font-size:11px; max-height:200px; overflow-y:auto; border-top:1px solid #eee; padding-top:10px;"></div>
-        <button class="btn-m" style="margin-top:15px; background:#666" onclick="document.getElementById('mdl').style.display='none'">Kapat</button>
-    </div>
-</div>
+<div id="mdl" onclick="this.style.display='none'"><div class="mdl-c" id="mI"></div></div>
 
 <script>
-const defO = ["Ali Ömer ARSLAN","Arda ARSLAN","Ayşe ŞINIK","Barış HALLUM","Beyazıt GÖRKEN","Bilgesu TOPRAK","Bora ALAS","Defne KAYNAR","Derin URAZ","Elif ÇİTKAP","Emir Efe ALPER","Esra DEMİRLİ","Eymen HALICI","Hüma ALTINIŞIK","İpek ELDEK","Irmak ERDEM","Kumsal GÜNDOĞARKEN","Melis KILIÇ","Mert BALCIOĞLU","Musa KARAÖZ","Mustafa DAL","Naz AKGÜN","Nisa YALILAR","Onuralp TOK","Önder TURĞAY","Poyraz SEZGİN","Roza AYDIN","Rüzgar GÜL","Yaz YILMAZ","Yusuf BİRLİK"];
-const defD = ["Türkçe","Matematik","Fen","Sosyal","İngilizce"];
+const list = ["Ali Ömer ARSLAN","Arda ARSLAN","Ayşe ŞINIK","Barış HALLUM","Beyazıt GÖRKEN","Bilgesu TOPRAK","Bora ALAS","Defne KAYNAR","Derin URAZ","Elif ÇİTKAP","Emir Efe ALPER","Esra DEMİRLİ","Eymen HALICI","Hüma ALTINIŞIK","İpek ELDEK","Irmak ERDEM","Kumsal GÜNDOĞARKEN","Melis KILIÇ","Mert BALCIOĞLU","Musa KARAÖZ","Mustafa DAL","Naz AKGÜN","Nisa YALILAR","Onuralp TOK","Önder TURĞAY","Poyraz SEZGİN","Roza AYDIN","Rüzgar GÜL","Yaz YILMAZ","Yusuf BİRLİK"];
+const drs = ["Türkçe","Matematik","Fen","Sosyal","İngilizce"];
 
-let st = JSON.parse(localStorage.getItem('brans_v20')) || {
-    cls: {"4-A": defO}, cur: "4-A", ders: defD,
-    db: {v:{}, k:{}, od:{}, notes:{}, sz:{}, szNotes:{}}
-};
+let st = JSON.parse(localStorage.getItem('ok_v21')) || { db: {v:{}, k:{}, od:{}, notes:{}, sz:{}, szNotes:{}} };
 
-function tab(id, btn) {
-    var pgs = document.getElementsByClassName('page');
-    for (var i = 0; i < pgs.length; i++) { pgs[i].style.display = 'none'; }
-    var btns = document.querySelectorAll('#sidebar button');
-    for (var j = 0; j < btns.length; j++) { btns[j].classList.remove('active'); }
+function pg(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
     document.getElementById(id).style.display = 'block';
     btn.classList.add('active');
     if(id==='p4') rRap();
 }
 
-function kaydetHerSey() { localStorage.setItem('brans_v20', JSON.stringify(st)); alert("Kaydedildi!"); }
-function degisSınıf(v) { st.cur = v; localStorage.setItem('brans_v20', JSON.stringify(st)); location.reload(); }
+function sv() { localStorage.setItem('ok_v21', JSON.stringify(st)); alert("Kayıt Tamam"); }
 
-function clsKaydet() {
-    const n = document.getElementById('iCN').value.trim();
-    const s = document.getElementById('iCS').value.split('\n').filter(x=>x.trim()!=="").sort((a,b)=>a.localeCompare(b,'tr'));
-    if(!n || s.length===0) return alert("Eksik!");
-    st.cls[n] = s; st.cur = n; localStorage.setItem('brans_v20', JSON.stringify(st)); location.reload();
-}
-
-function dersKaydet() {
-    st.ders = document.getElementById('iDS').value.split(',').map(x=>x.trim()).filter(x=>x!=="");
-    localStorage.setItem('brans_v20', JSON.stringify(st)); location.reload();
+function nS() {
+    const dO = document.getElementById('s3').value; const dS = document.getElementById('s6').value;
+    if(dO) st.db.notes[dO] = document.getElementById('oN').value;
+    if(dS) st.db.szNotes[dS] = document.getElementById('sN').value;
 }
 
 function u(t, k, n, v) { if(!st.db[t][k]) st.db[t][k] = {}; st.db[t][k][n] = v; r(); }
-function notAl(f, i, t, s) { const key = document.getElementById(t).value + "_" + document.getElementById(s).value + "_" + st.cur; st.db[f][key] = document.getElementById(i).value; }
 
 function r() {
-    const oL = st.cls[st.cur] || [];
-    const tV = document.getElementById('t1').value, dK = document.getElementById('s2').value, tK = document.getElementById('t2').value, dO = document.getElementById('s3').value, tO = document.getElementById('t3').value, dS = document.getElementById('s6').value, tS = document.getElementById('t6').value;
+    const tV = document.getElementById('t1').value, dK = document.getElementById('s2').value, dO = document.getElementById('s3').value, dS = document.getElementById('s6').value;
     
-    const vK = tV + "_" + st.cur; const vD = st.db.v[vK] || {};
-    document.getElementById('l1').innerHTML = oL.map(s => `<div class="row"><span class="stu-name" onclick="kart('${s}')">${s}</span><div><button class="btn-s ${vD[s]==='y'?'':'on'}" onclick="u('v','${vK}','${s}','v')">VAR</button><button class="btn-s ${vD[s]==='y'?'on':''}" onclick="u('v','${vK}','${s}','y')">YOK</button></div></div>`).join('');
-    if(dK) { const kK = tK+"_"+dK+"_"+st.cur, kD = st.db.k[kK] || {}; document.getElementById('l2').innerHTML = oL.map(s => `<div class="row"><span class="stu-name" onclick="kart('${s}')">${s}</span><button class="btn-s ${kD[s]?'on':''}" onclick="u('k','${kK}','${s}',${!kD[s]})">${kD[s]?'⭐':'PAS'}</button></div>`).join(''); }
-    if(dO) { const oK = tO+"_"+dO+"_"+st.cur, oD = st.db.od[oK] || {}; document.getElementById('l3').innerHTML = oL.map(s => `<div class="row"><span class="stu-name" onclick="kart('${s}')">${s}</span><button class="btn-s ${oD[s]===true?'on':''}" onclick="u('od','${oK}','${s}',${oD[s]===true?false:true})">${oD[s]===true?'✅':'YOK'}</button></div>`).join(''); document.getElementById('oN').value = st.db.notes[oK] || ""; }
-    if(dS) { const sK = tS+"_"+dS+"_"+st.cur, sD = st.db.sz[sK] || {}; document.getElementById('l6').innerHTML = oL.map(s => `<div class="row"><span class="stu-name" onclick="kart('${s}')">${s}</span><div><button class="btn-s ${sD[s]==='p'?'on':''}" onclick="u('sz','${sK}','${s}','p')">+</button><button class="btn-s ${sD[s]==='h'?'half':''}" onclick="u('sz','${sK}','${s}','h')">+/-</button><button class="btn-s ${sD[s]==='e'?'off':''}" onclick="u('sz','${sK}','${s}','e')">-</button></div></div>`).join(''); document.getElementById('sN').value = st.db.szNotes[sK] || ""; }
+    document.getElementById('l1').innerHTML = list.map(s => `<div class="row"><span class="stu-name" onclick="kart('${s}')">${s}</span><div><button class="btn-s ${st.db.v[tV]?.[s]==='y'?'':'on'}" onclick="u('v','${tV}','${s}','v')">VAR</button><button class="btn-s ${st.db.v[tV]?.[s]==='y'?'on':''}" onclick="u('v','${tV}','${s}','y')">YOK</button></div></div>`).join('');
+    
+    if(dK) document.getElementById('l2').innerHTML = list.map(s => `<div class="row"><span class="stu-name" onclick="kart('${s}')">${s}</span><button class="btn-s ${st.db.k[dK]?.[s]?'on':''}" onclick="u('k','${dK}','${s}',${!st.db.k[dK]?.[s]})">${st.db.k[dK]?.[s]?'⭐':'PAS'}</button></div>`).join('');
+    
+    if(dO) {
+        document.getElementById('l3').innerHTML = list.map(s => `<div class="row"><span class="stu-name" onclick="kart('${s}')">${s}</span><button class="btn-s ${st.db.od[dO]?.[s]?'on':''}" onclick="u('od','${dO}','${s}',${!st.db.od[dO]?.[s]})">${st.db.od[dO]?.[s]?'✅':'YOK'}</button></div>`).join('');
+        document.getElementById('oN').value = st.db.notes[dO] || "";
+    }
+    
+    if(dS) {
+        document.getElementById('l6').innerHTML = list.map(s => `<div class="row"><span class="stu-name" onclick="kart('${s}')">${s}</span><div><button class="btn-s ${st.db.sz[dS]?.[s]==='p'?'on':''}" onclick="u('sz','${dS}','${s}','p')">+</button><button class="btn-s ${st.db.sz[dS]?.[s]==='h'?'half':''}" onclick="u('sz','${dS}','${s}','h')">+/-</button><button class="btn-s ${st.db.sz[dS]?.[s]==='e'?'off':''}" onclick="u('sz','${dS}','${s}','e')">-</button></div></div>`).join('');
+        document.getElementById('sN').value = st.db.szNotes[dS] || "";
+    }
 }
 
 function kart(n) {
-    let y=0, k=0, o=0, p=0, eksik = [];
-    Object.entries(st.db.v).forEach(([key,v])=>{ if(key.endsWith(st.cur) && v[n]==='y') y++; });
-    Object.entries(st.db.k).forEach(([key,v])=>{ if(key.endsWith(st.cur) && v[n]) k++; });
-    Object.entries(st.db.sz).forEach(([key,v])=>{ if(key.endsWith(st.cur) && v[n]==='p') p++; });
-    Object.entries(st.db.od).forEach(([key,v])=>{ if(key.endsWith(st.cur)) { if(v[n]===true) o++; else eksik.push(key.split('_')[0] + " " + key.split('_')[1]); } });
-    
-    document.getElementById('mdlT').innerText = n;
-    document.getElementById('mY').innerText = y; document.getElementById('mK').innerText = k;
-    document.getElementById('mO').innerText = o; document.getElementById('mS').innerText = p;
-    document.getElementById('mDet').innerHTML = eksik.length > 0 ? "<b>Eksik Ödevler:</b><br>" + eksik.join('<br>') : "Tüm ödevler tamam! ✨";
+    let y=0, k=0, o=0, p=0;
+    Object.values(st.db.v).forEach(v => { if(v[n]==='y') y++; });
+    Object.values(st.db.k).forEach(v => { if(v[n]) k++; });
+    Object.values(st.db.od).forEach(v => { if(v[n]) o++; });
+    Object.values(st.db.sz).forEach(v => { if(v[n]==='p') p++; });
+    document.getElementById('mI').innerHTML = `<h3>${n}</h3><p>Yokluk: ${y}</p><p>Yıldız: ${k}</p><p>Ödev: ${o}</p><p>Sözlü: ${p}</p>`;
     document.getElementById('mdl').style.display='block';
 }
 
 function rRap() {
-    let h = "<table border='1' style='width:100%; border-collapse:collapse; font-size:10px;'><tr><th>Ad</th><th>Y</th><th>⭐</th><th>✅</th><th>+</th></tr>";
-    st.cls[st.cur].forEach(s => {
+    let h = "<table border='1' style='width:100%; font-size:10px;'><tr><th>Ad</th><th>Y</th><th>⭐</th><th>✅</th><th>+</th></tr>";
+    list.forEach(s => {
         let y=0, k=0, o=0, p=0;
-        Object.entries(st.db.v).forEach(([key,v])=>{ if(key.endsWith(st.cur) && v[s]==='y') y++; });
-        Object.entries(st.db.k).forEach(([key,v])=>{ if(key.endsWith(st.cur) && v[s]) k++; });
-        Object.entries(st.db.od).forEach(([key,v])=>{ if(key.endsWith(st.cur) && v[s]===true) o++; });
-        Object.entries(st.db.sz).forEach(([key,v])=>{ if(key.endsWith(st.cur) && v[s]==='p') p++; });
-        h += `<tr><td onclick="kart('${s}')" style="color:blue"><u>${s}</u></td><td>${y}</td><td>${k}</td><td>${o}</td><td>${p}</td></tr>`;
+        Object.values(st.db.v).forEach(v => { if(v[s]==='y') y++; });
+        Object.values(st.db.k).forEach(v => { if(v[s]) k++; });
+        Object.values(st.db.od).forEach(v => { if(v[s]) o++; });
+        Object.values(st.db.sz).forEach(v => { if(v[s]==='p') p++; });
+        h += `<tr><td>${s}</td><td>${y}</td><td>${k}</td><td>${o}</td><td>${p}</td></tr>`;
     });
     document.getElementById('l4').innerHTML = h + "</table>";
 }
 
 window.onload = function() {
-    const t = new Date().toISOString().split('T')[0];
-    ['t1','t2','t3','t6'].forEach(id => document.getElementById(id).value = t);
-    const sel = document.getElementById('clsSel');
-    Object.keys(st.cls).forEach(c => {
-        const o = document.createElement('option'); o.value = c; o.text = c;
-        if(c === st.cur) o.selected = true; sel.add(o);
-    });
-    let opt = '<option value="">-Seç-</option>' + st.ders.map(d => `<option value="${d}">${d}</option>`).join('');
+    document.getElementById('t1').value = new Date().toISOString().split('T')[0];
+    let opt = '<option value="">-Seç-</option>' + drs.map(d => `<option value="${d}">${d}</option>`).join('');
     ['s2','s3','s6'].forEach(id => document.getElementById(id).innerHTML = opt);
-    document.getElementById('curDisplay').innerText = st.cur;
-    document.getElementById('iCN').value = st.cur;
-    document.getElementById('iCS').value = st.cls[st.cur].join('\n');
-    document.getElementById('iDS').value =
+    r();
+};
+</script>
+</body>
+</html>
