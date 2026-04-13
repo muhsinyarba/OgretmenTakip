@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Öğretmen Takip PRO V48</title>
+<title>Öğretmen Takip PRO</title>
 
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,51 +15,50 @@
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
   
   body { background: var(--bg); height: 100vh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; position: fixed; top:0; left:0; padding-top: env(safe-area-inset-top); }
-  header { background: var(--p); color: white; padding: 12px; text-align: center; font-size: 15px; font-weight: bold; flex-shrink: 0; }
-  .top-panel { background: #1e293b; color: white; padding: 10px; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
+  header { background: var(--p); color: white; padding: 12px; text-align: center; font-size: 15px; font-weight: bold; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+  .top-panel { background: #1e293b; color: white; padding: 10px; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; }
   
   .main-container { display: flex; flex: 1; overflow: hidden; position: relative; width: 100%; }
   
-  /* Sabit Yan Menü - Donma Önleyici Z-Index */
+  /* Yan Menü */
   nav { width: 75px; background: #1e3a8a; display: flex !important; flex-direction: column; flex-shrink: 0; height: 100%; z-index: 9999; }
-  nav button { padding: 20px 2px; border: none; background: none; color: white; font-size: 10px; cursor: pointer; border-bottom: 1px solid #2563eb; outline: none; }
+  nav button { padding: 18px 2px; border: none; background: none; color: white; font-size: 10px; cursor: pointer; border-bottom: 1px solid #2563eb; outline: none; }
   nav button.active { background: var(--p); border-left: 5px solid white; font-weight: bold; }
 
-  /* İçerik Alanı */
+  /* İçerik */
   .content-wrapper { flex: 1; position: relative; height: 100%; background: var(--bg); overflow: hidden; }
-  .page { display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding: 15px; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--bg); }
+  .page { display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; padding: 15px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
   .page.active { display: block !important; }
 
   .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+  h3 { font-size: 14px; margin-bottom: 10px; color: #1e293b; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; }
   .row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
   .stu-name { font-size: 12px; font-weight: 600; color: #334155; flex: 1; }
-  .stu-link { color: var(--p); text-decoration: underline; cursor: pointer; }
 
-  .btn-s { padding: 10px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 11px; min-width: 55px; background: #f8fafc; font-weight: bold; }
+  /* Butonlar */
+  .btn-s { padding: 9px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 11px; min-width: 55px; background: #f8fafc; font-weight: bold; }
   .btn-s.off { background: var(--d); color: white; border-color: var(--d); }
   .btn-s.on { background: var(--p); color: white; border-color: var(--p); }
-  
-  .btn-n { padding: 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 13px; width: 42px; background: #f8fafc; font-weight: bold; }
+  .btn-n { padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 12px; width: 40px; background: #f8fafc; font-weight: bold; }
   .btn-n.selected { background: var(--p); color: white; }
-  
   .btn-m { width: 100%; padding: 15px; border-radius: 10px; border: none; background: var(--p); color: white; font-weight: bold; cursor: pointer; }
   
   input, textarea, select { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px; background: #fff; }
-  table { width: 100%; border-collapse: collapse; font-size: 11px; background: white; margin-top: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; background: white; }
   th, td { border: 1px solid #e2e8f0; padding: 10px 5px; text-align: center; }
 
-  /* Modal */
+  /* Karne Modal */
   #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:100000; align-items:center; justify-content:center; padding:20px; }
   .k-card { background:white; border-radius:20px; width:100%; max-width:350px; padding:25px; }
 </style>
 </head>
 <body>
 
-<header>ÖĞRETMEN TAKİP APP</header>
+<header>ÖĞRETMEN TAKİP PRO</header>
 
 <div class="top-panel">
-  <span id="displayClass" style="font-size:12px; font-weight:bold;">Sınıf Seçin</span>
-  <button onclick="saveAll()" style="background:var(--s); color:white; border:none; padding:8px 15px; border-radius:8px; font-weight:bold; font-size:11px;">💾 KAYDET</button>
+  <span id="displayClass" style="font-size:12px; font-weight:bold;">Sınıf: 4-B</span>
+  <button onclick="saveAll()" style="background:var(--s); color:white; border:none; padding:8px 15px; border-radius:8px; font-weight:bold;">💾 KAYDET</button>
 </div>
 
 <div class="main-container">
@@ -73,20 +72,44 @@
   </nav>
 
   <div class="content-wrapper">
-    <div id="p1" class="page active"><div class="card"><h3>Yoklama</h3><input type="date" id="dateIn" onchange="ren()"><div id="l1"></div></div></div>
-    <div id="p2" class="page"><div class="card"><h3>Katılım (⭐)</h3><select id="sKat" onchange="ren()"></select><div id="l2"></div></div></div>
-    <div id="p3" class="page"><div class="card"><h3>Ödev Takibi</h3><select id="sOdv" onchange="ren()"></select><textarea id="oNote" placeholder="Ödev notu..." rows="2" oninput="sn('od')"></textarea><div id="l3"></div></div></div>
-    <div id="p6" class="page"><div class="card"><h3>Sözlü (1-4)</h3><select id="sSoz" onchange="ren()"></select><textarea id="sNote" placeholder="Konu..." rows="2" oninput="sn('sz')"></textarea><div id="l6"></div></div></div>
-    <div id="p4" class="page"><div class="card"><h3>Genel Rapor</h3><button class="btn-m" style="background:var(--s); margin-bottom:12px" onclick="exXLS()">📥 EXCEL İNDİR</button><div id="repArea" style="overflow-x:auto"></div></div></div>
+    <div id="p1" class="page active"><div class="card"><h3>Günlük Yoklama</h3><input type="date" id="dateIn" onchange="ren()"><div id="l1"></div></div></div>
+    
+    <div id="p2" class="page"><div class="card"><h3>Derse Katılım (⭐)</h3><select id="sKat" onchange="ren()"></select><div id="l2"></div></div></div>
+    
+    <div id="p3" class="page">
+        <div class="card">
+            <h3>Ödev Takibi</h3>
+            <select id="sOdv" onchange="ren()"></select>
+            <textarea id="oNote" placeholder="Ödev konusunu buraya not alın..." rows="2" oninput="sn('od')"></textarea>
+            <div id="l3"></div>
+        </div>
+    </div>
+
+    <div id="p6" class="page">
+        <div class="card">
+            <h3>Sözlü Puanı (1-4)</h3>
+            <select id="sSoz" onchange="ren()"></select>
+            <textarea id="sNote" placeholder="Sözlü/Değerlendirme konusu..." rows="2" oninput="sn('sz')"></textarea>
+            <div id="l6"></div>
+        </div>
+    </div>
+
+    <div id="p4" class="page">
+        <div class="card">
+            <h3>Genel Rapor</h3>
+            <button class="btn-m" style="background:var(--s); margin-bottom:12px" onclick="exXLS()">📥 EXCEL İNDİR</button>
+            <div id="repArea" style="overflow-x:auto"></div>
+        </div>
+    </div>
     
     <div id="p5" class="page">
         <div class="card">
-            <h3>Sınıf ve Öğrenci Ekle</h3>
+            <h3>Sınıf ve Liste Yönetimi</h3>
             <input type="text" id="iCN" placeholder="Sınıf Adı (Örn: 4-B)">
-            <textarea id="iCS" rows="5" placeholder="İsimler (Alt alta)"></textarea>
-            <button class="btn-m" onclick="addNewCls()">Sınıfı Kaydet</button>
+            <textarea id="iCS" rows="6" placeholder="Öğrenciler (Her satıra bir isim)"></textarea>
+            <button class="btn-m" onclick="addNewCls()">Sınıfı Kaydet / Güncelle</button>
         </div>
-        <div class="card"><button class="btn-m" style="background:var(--d)" onclick="reset()">⚠️ SİSTEMİ SIFIRLA</button></div>
+        <div class="card"><button class="btn-m" style="background:var(--d)" onclick="reset()">⚠️ TÜM SİSTEMİ SIFIRLA</button></div>
     </div>
   </div>
 </div>
@@ -98,7 +121,7 @@
 const defO = ["Ali Ömer ARSLAN","Arda ARSLAN","Ayşe ŞINIK","Barış HALLUM","Beyazıt GÖRKEN","Bilgesu TOPRAK","Bora ALAS","Defne KAYNAR","Derin URAZ","Elif ÇİTKAP","Emir Efe ALPER","Esra DEMİRLİ","Eymen HALICI","Hüma ALTINIŞIK","İpek ELDEK","Irmak ERDEM","Kumsal GÜNDOĞARKEN","Melis KILIÇ","Mert BALCIOĞLU","Musa KARAÖZ","Mustafa DAL","Naz AKGÜN","Nisa YALILAR","Onuralp TOK","Önder TURĞAY","Poyraz SEZGİN","Roza AYDIN","Rüzgar GÜL","Yaz YILMAZ","Yusuf BİRLİK"];
 const defD = ["Türkçe","Matematik","Fen Bilimleri","Sosyal Bilgiler","İngilizce","Trafik","İnsan Hakları"];
 
-let st = JSON.parse(localStorage.getItem('ok_v48_final')) || { cls: {"4-B": defO}, cur: "4-B", ders: defD, db: { v:{}, k:{}, od:{}, sz:{}, n_od:{}, n_sz:{} } };
+let st = JSON.parse(localStorage.getItem('ok_v48_2026')) || { cls: {"4-B": defO}, cur: "4-B", ders: defD, db: { v:{}, k:{}, od:{}, sz:{}, n_od:{}, n_sz:{} } };
 
 function nv(id, btn) {
     document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
@@ -108,8 +131,8 @@ function nv(id, btn) {
     if(id === 'p4') rRep();
 }
 
-function saveAll() { localStorage.setItem('ok_v48_final', JSON.stringify(st)); alert("Kaydedildi!"); }
-function reset() { if(confirm('Sıfırlansın mı?')){ localStorage.clear(); location.reload(); } }
+function saveAll() { localStorage.setItem('ok_v48_2026', JSON.stringify(st)); alert("Başarıyla Kaydedildi!"); }
+function reset() { if(confirm('Tüm veriler silinecek, emin misiniz?')){ localStorage.clear(); location.reload(); } }
 
 function addNewCls() {
     const n = document.getElementById('iCN').value.trim();
@@ -137,16 +160,16 @@ function ren() {
     const date = document.getElementById('dateIn').value;
     const cK = document.getElementById('sKat').value || "G", cO = document.getElementById('sOdv').value || "G", cS = document.getElementById('sSoz').value || "G";
 
-    document.getElementById('l1').innerHTML = list.map(s => `<div class="row"><span>${s}</span><button class="btn-s ${st.db.v[date+"_"+st.cur]?.[s] === 'y' ? 'off' : ''}" onclick="uv('v','${date}','${s}','y')">YOK</button></div>`).join('');
-    document.getElementById('l2').innerHTML = list.map(s => `<div class="row"><span>${s}</span><button class="btn-s ${st.db.k[cK+"_"+st.cur]?.[s] ? 'on' : ''}" onclick="uv('k','${cK}','${s}',${!st.db.k[cK+"_"+st.cur]?.[s]})">⭐</button></div>`).join('');
+    document.getElementById('l1').innerHTML = list.map(s => `<div class="row"><span class="stu-name">${s}</span><button class="btn-s ${st.db.v[date+"_"+st.cur]?.[s] === 'y' ? 'off' : ''}" onclick="uv('v','${date}','${s}','y')">YOK</button></div>`).join('');
+    document.getElementById('l2').innerHTML = list.map(s => `<div class="row"><span class="stu-name">${s}</span><button class="btn-s ${st.db.k[cK+"_"+st.cur]?.[s] ? 'on' : ''}" onclick="uv('k','${cK}','${s}',${!st.db.k[cK+"_"+st.cur]?.[s]})">⭐</button></div>`).join('');
     
     document.getElementById('oNote').value = st.db.n_od[cO + "_" + st.cur] || "";
-    document.getElementById('l3').innerHTML = list.map(s => `<div class="row"><span>${s}</span><button class="btn-s ${st.db.od[cO+"_"+st.cur]?.[s] ? 'on' : ''}" onclick="uv('od','${cO}','${s}',${!st.db.od[cO+"_"+st.cur]?.[s]})">✅</button></div>`).join('');
+    document.getElementById('l3').innerHTML = list.map(s => `<div class="row"><span class="stu-name">${s}</span><button class="btn-s ${st.db.od[cO+"_"+st.cur]?.[s] ? 'on' : ''}" onclick="uv('od','${cO}','${s}',${!st.db.od[cO+"_"+st.cur]?.[s]})">✅</button></div>`).join('');
 
     document.getElementById('sNote').value = st.db.n_sz[cS + "_" + st.cur] || "";
     document.getElementById('l6').innerHTML = list.map(s => {
         const val = st.db.sz[cS+"_"+st.cur]?.[s];
-        return `<div class="row"><span class="stu-name stu-link" onclick="openK('${s}')">${s}</span><div style="display:flex; gap:4px;">${[1,2,3,4].map(n => `<button class="btn-n ${val == n ? 'selected' : ''}" onclick="uv('sz','${cS}','${s}',${n})">${n}</button>`).join('')}</div></div>`;
+        return `<div class="row"><span class="stu-name" style="color:var(--p);text-decoration:underline" onclick="openK('${s}')">${s}</span><div style="display:flex; gap:4px;">${[1,2,3,4].map(n => `<button class="btn-n ${val == n ? 'selected' : ''}" onclick="uv('sz','${cS}','${s}',${n})">${n}</button>`).join('')}</div></div>`;
     }).join('');
 }
 
