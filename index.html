@@ -3,33 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Öğretmen Takip PRO - V22</title>
+<title>Öğretmen Takip PRO</title>
 <style>
   :root { --p: #2563eb; --s: #16a34a; --d: #ef4444; --w: #f59e0b; }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-  body { background: #f0f4ff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+  body { background: #f0f4ff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; position: fixed; width: 100%; }
   header { background: var(--p); color: white; padding: 10px; text-align: center; font-size: 14px; font-weight: bold; flex-shrink: 0; }
-  .top-panel { background: #1e293b; color: white; padding: 10px; flex-shrink: 0; text-align: center; }
+  .top-panel { background: #1e293b; color: white; padding: 8px; flex-shrink: 0; text-align: center; }
   .main-container { display: flex; flex: 1; overflow: hidden; }
-  /* SOL MENÜ */
-  nav { width: 70px; background: #1e3a8a; display: flex; flex-direction: column; flex-shrink: 0; }
-  nav button { padding: 15px 2px; border: none; background: none; color: white; font-size: 10px; cursor: pointer; border-bottom: 1px solid #2563eb; }
-  nav button.active { background: var(--p); border-left: 4px solid white; }
-  /* İÇERİK */
-  .content { flex: 1; overflow-y: auto; padding: 10px; padding-bottom: 30px; }
+  nav { width: 65px; background: #1e3a8a; display: flex; flex-direction: column; flex-shrink: 0; border-right: 1px solid #1e3a8a; }
+  nav button { padding: 15px 2px; border: none; background: none; color: white; font-size: 9px; cursor: pointer; border-bottom: 1px solid #2563eb; opacity: 0.7; }
+  nav button.active { background: var(--p); opacity: 1; border-left: 4px solid white; }
+  .content { flex: 1; overflow-y: auto; padding: 10px; -webkit-overflow-scrolling: touch; }
   .page { display: none; }
   .page.active { display: block; }
-  .card { background: white; border-radius: 8px; padding: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .card { background: white; border-radius: 8px; padding: 12px; margin-bottom: 10px; shadow: 0 1px 3px rgba(0,0,0,0.1); }
   .row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
-  .stu-name { font-size: 11px; color: var(--p); text-decoration: underline; font-weight: bold; }
-  .btn-s { padding: 8px; border-radius: 4px; border: 1px solid #ddd; font-size: 10px; min-width: 35px; background: white; }
+  .stu-name { font-size: 10.5px; color: var(--p); font-weight: bold; text-decoration: underline; flex: 1; }
+  .btn-s { padding: 8px; border-radius: 4px; border: 1px solid #ddd; font-size: 10px; min-width: 35px; background: white; cursor: pointer; }
   .btn-s.on { background: var(--p); color: white; }
   .btn-s.half { background: var(--w); color: white; }
   .btn-s.off { background: var(--d); color: white; }
-  .btn-m { width: 100%; padding: 12px; border-radius: 6px; border: none; background: var(--p); color: white; font-weight: bold; margin-bottom: 10px; cursor: pointer; }
-  select, input, textarea { width: 100%; padding: 10px; margin-bottom: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; }
+  .btn-m { width: 100%; padding: 12px; border-radius: 6px; border: none; background: var(--p); color: white; font-weight: bold; cursor: pointer; }
+  select, input, textarea { width: 100%; padding: 10px; margin-bottom: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; -webkit-appearance: none; }
   #mdl { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; padding:20px; }
-  .mdl-c { background:white; border-radius:12px; padding:20px; margin:auto; }
+  .mdl-c { background:white; border-radius:12px; padding:20px; margin:auto; max-width:400px; position:relative; }
 </style>
 </head>
 <body>
@@ -37,11 +35,11 @@
 <header>Öğretmen Takip PRO</header>
 
 <div class="top-panel">
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; font-size:11px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:11px;">
     <span>Sınıf: <b id="curDisplay">...</b></span>
-    <select id="clsSel" onchange="window.degisSinif(this.value)" style="width:auto; margin:0; padding:2px; font-size:10px;"></select>
+    <select id="clsSel" onchange="degisSinif(this.value)" style="width:auto; margin:0; padding:2px; font-size:10px; background:#1e3a8a; color:white; border:none;"></select>
   </div>
-  <button class="btn-m" style="background:#16a34a; margin:0; padding:8px" onclick="window.sv()">💾 TÜMÜNÜ KAYDET</button>
+  <button class="btn-m" style="background:var(--s); padding:8px; margin:0;" onclick="sv()">💾 TÜMÜNÜ KAYDET</button>
 </div>
 
 <div class="main-container">
@@ -57,25 +55,13 @@
   <div class="content">
     <div id="p1" class="page active"><div class="card"><h3>Yoklama</h3><input type="date" id="t1" onchange="r()"><div id="l1"></div></div></div>
     <div id="p2" class="page"><div class="card"><h3>Katılım</h3><select id="s2" onchange="r()"></select><div id="l2"></div></div></div>
-    <div id="p3" class="page"><div class="card"><h3>Ödev</h3><select id="s3" onchange="r()"></select><input type="text" id="oN" placeholder="Konu" oninput="nS()"><div id="l3"></div></div></div>
-    <div id="p6" class="page"><div class="card"><h3>Sözlü</h3><select id="s6" onchange="r()"></select><input type="text" id="sN" placeholder="Konu" oninput="nS()"><div id="l6"></div></div></div>
-    <div id="p4" class="page"><div class="card"><h3>Rapor</h3><div id="l4"></div></div></div>
-    
+    <div id="p3" class="page"><div class="card"><h3>Ödev</h3><select id="s3" onchange="r()"></select><input type="text" id="oN" placeholder="Ödev Konusu" oninput="nS()"><div id="l3"></div></div></div>
+    <div id="p6" class="page"><div class="card"><h3>Sözlü</h3><select id="s6" onchange="r()"></select><input type="text" id="sN" placeholder="Sözlü Konusu" oninput="nS()"><div id="l6"></div></div></div>
+    <div id="p4" class="page"><div class="card"><h3>Genel Rapor</h3><div id="l4"></div></div></div>
     <div id="p5" class="page">
-        <div class="card">
-            <h3>Sınıf ve Öğrenci Yönetimi</h3>
-            <input type="text" id="iCN" placeholder="Sınıf Adı (Örn: 4-A)">
-            <textarea id="iCS" rows="5" placeholder="Öğrenci Listesi (Her satıra bir isim)"></textarea>
-            <button class="btn-m" onclick="window.saveCls()">Sınıfı Kaydet</button>
-        </div>
-        <div class="card">
-            <h3>Ders Ayarları</h3>
-            <textarea id="iDS" rows="2" placeholder="Dersleri virgülle ayırın (Türkçe, Matematik...)"></textarea>
-            <button class="btn-m" style="background:#16a34a" onclick="window.saveDers()">Dersleri Kaydet</button>
-        </div>
-        <div class="card">
-            <button class="btn-m" style="background:var(--d)" onclick="if(confirm('Her şey silinsin mi?')){localStorage.clear();location.reload();}">⚠️ SIFIRLA</button>
-        </div>
+        <div class="card"><h3>Sınıf Ekle</h3><input type="text" id="iCN" placeholder="Ad"><textarea id="iCS" rows="4" placeholder="Listeler"></textarea><button class="btn-m" onclick="saveCls()">Kaydet</button></div>
+        <div class="card"><h3>Ders Ayarı</h3><textarea id="iDS" rows="2"></textarea><button class="btn-m" style="background:var(--s)" onclick="saveDers()">Dersleri Kaydet</button></div>
+        <div class="card"><button class="btn-m" style="background:var(--d)" onclick="if(confirm('SIFIRLANSIN MI?')){localStorage.clear();location.reload();}">⚠️ SIFIRLA</button></div>
     </div>
   </div>
 </div>
@@ -86,33 +72,36 @@
 const defO = ["Ali Ömer ARSLAN","Arda ARSLAN","Ayşe ŞINIK","Barış HALLUM","Beyazıt GÖRKEN","Bilgesu TOPRAK","Bora ALAS","Defne KAYNAR","Derin URAZ","Elif ÇİTKAP","Emir Efe ALPER","Esra DEMİRLİ","Eymen HALICI","Hüma ALTINIŞIK","İpek ELDEK","Irmak ERDEM","Kumsal GÜNDOĞARKEN","Melis KILIÇ","Mert BALCIOĞLU","Musa KARAÖZ","Mustafa DAL","Naz AKGÜN","Nisa YALILAR","Onuralp TOK","Önder TURĞAY","Poyraz SEZGİN","Roza AYDIN","Rüzgar GÜL","Yaz YILMAZ","Yusuf BİRLİK"];
 const defD = ["Türkçe","Matematik","Fen","Sosyal","İngilizce"];
 
-let st = JSON.parse(localStorage.getItem('ok_v22')) || {
+let st = JSON.parse(localStorage.getItem('ok_v23')) || {
     cls: {"4-A": defO}, cur: "4-A", ders: defD,
     db: {v:{}, k:{}, od:{}, notes:{}, sz:{}, szNotes:{}}
 };
 
 function pg(id, btn) {
-    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-    document.querySelectorAll('#sidebar button').forEach(b => b.classList.remove('active'));
+    var pgs = document.getElementsByClassName('page');
+    for (var i = 0; i < pgs.length; i++) { pgs[i].style.display = 'none'; }
+    var btns = document.querySelectorAll('#sidebar button');
+    for (var j = 0; j < btns.length; j++) { btns[j].classList.remove('active'); }
     document.getElementById(id).style.display = 'block';
     btn.classList.add('active');
     if(id==='p4') rRap();
 }
 
-window.sv = function() { localStorage.setItem('ok_v22', JSON.stringify(st)); alert("Kaydedildi!"); };
-window.degisSinif = function(v) { st.cur = v; window.sv(); location.reload(); };
+function sv() { localStorage.setItem('ok_v23', JSON.stringify(st)); alert("Kaydedildi!"); }
 
-window.saveCls = function() {
+function degisSinif(v) { st.cur = v; sv(); location.reload(); }
+
+function saveCls() {
     const n = document.getElementById('iCN').value.trim();
     const s = document.getElementById('iCS').value.split('\n').filter(x=>x.trim()!=="").sort((a,b)=>a.localeCompare(b,'tr'));
-    if(!n || s.length===0) return alert("Eksik bilgi!");
-    st.cls[n] = s; st.cur = n; window.sv(); location.reload();
-};
+    if(!n || s.length===0) return alert("Eksik!");
+    st.cls[n] = s; st.cur = n; sv(); location.reload();
+}
 
-window.saveDers = function() {
+function saveDers() {
     st.ders = document.getElementById('iDS').value.split(',').map(x=>x.trim()).filter(x=>x!=="");
-    window.sv(); location.reload();
-};
+    sv(); location.reload();
+}
 
 function nS() {
     const dO = document.getElementById('s3').value; const dS = document.getElementById('s6').value;
@@ -157,14 +146,14 @@ function kart(n) {
 }
 
 function rRap() {
-    let h = "<table border='1' style='width:100%; font-size:10px;'><tr><th>Ad</th><th>Y</th><th>⭐</th><th>✅</th><th>+</th></tr>";
+    let h = "<table border='1' style='width:100%; border-collapse:collapse; font-size:10px;'><tr><th>Ad</th><th>Y</th><th>⭐</th><th>✅</th><th>+</th></tr>";
     st.cls[st.cur].forEach(s => {
         let y=0, k=0, o=0, p=0;
         Object.entries(st.db.v).forEach(([key,v])=>{ if(key.endsWith(st.cur) && v[s]==='y') y++; });
         Object.entries(st.db.k).forEach(([key,v])=>{ if(key.endsWith(st.cur) && v[s]) k++; });
         Object.entries(st.db.od).forEach(([key,v])=>{ if(key.endsWith(st.cur) && v[s]) o++; });
         Object.entries(st.db.sz).forEach(([key,v])=>{ if(key.endsWith(st.cur) && v[s]==='p') p++; });
-        h += `<tr><td>${s}</td><td>${y}</td><td>${k}</td><td>${o}</td><td>${p}</td></tr>`;
+        h += `<tr><td style="text-align:left">${s}</td><td>${y}</td><td>${k}</td><td>${o}</td><td>${p}</td></tr>`;
     });
     document.getElementById('l4').innerHTML = h + "</table>";
 }
