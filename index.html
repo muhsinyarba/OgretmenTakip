@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Öğretmen Takip PRO V49</title>
+<title>Öğretmen Takip PRO V50</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -28,12 +28,12 @@
   .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
   h3 { font-size: 14px; margin-bottom: 10px; color: #1e293b; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; }
   .row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
-  .stu-name { font-size: 12px; font-weight: 600; color: #334155; flex: 1; }
+  .stu-name { font-size: 11.5px; font-weight: 600; color: #334155; flex: 1; }
 
   .btn-s { padding: 9px 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 10px; min-width: 45px; background: #f8fafc; font-weight: bold; }
   .btn-s.off { background: var(--d); color: white; border-color: var(--d); }
   .btn-s.on { background: var(--s); color: white; border-color: var(--s); }
-  .btn-p { background: var(--p); color: white; border-color: var(--p); } /* Mavi VAR butonu */
+  .btn-var { background: var(--p); color: white; border-color: var(--p); } 
   
   .btn-n { padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-size: 12px; width: 38px; background: #f8fafc; font-weight: bold; }
   .btn-n.selected { background: var(--p); color: white; }
@@ -43,11 +43,9 @@
   table { width: 100%; border-collapse: collapse; font-size: 11px; background: white; }
   th, td { border: 1px solid #e2e8f0; padding: 10px 5px; text-align: center; }
 
-  /* Karne Modal */
   #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:100000; align-items:center; justify-content:center; padding:20px; }
   .k-card { background:white; border-radius:20px; width:100%; max-width:350px; padding:25px; }
 
-  /* Yazdırma Ayarı */
   @media print {
     nav, header, .top-panel, .btn-m { display: none !important; }
     body, .main-container, .content-wrapper, .page.active { position: static; overflow: visible; height: auto; width: 100%; }
@@ -57,10 +55,10 @@
 </head>
 <body>
 
-<header>ÖĞRETMEN TAKİP PRO V49</header>
+<header>ÖĞRETMEN TAKİP PRO V50</header>
 
 <div class="top-panel">
-  <span id="displayClass" style="font-size:12px; font-weight:bold;">Sınıf: 4-B</span>
+  <span id="displayClass" style="font-size:12px; font-weight:bold;">Sınıf: Seçilmedi</span>
   <button onclick="saveAll()" style="background:var(--s); color:white; border:none; padding:8px 15px; border-radius:8px; font-weight:bold;">💾 KAYDET</button>
 </div>
 
@@ -76,42 +74,19 @@
 
   <div class="content-wrapper">
     <div id="p1" class="page active"><div class="card"><h3>Yoklama</h3><input type="date" id="d1" onchange="ren()"><div id="l1"></div></div></div>
-    
-    <div id="p2" class="page"><div class="card"><h3>Derse Katılım</h3><input type="date" id="d2" onchange="ren()"><select id="s2" onchange="ren()"></select><div id="l2"></div></div></div>
-    
-    <div id="p3" class="page">
-        <div class="card">
-            <h3>Ödev Takibi</h3>
-            <input type="date" id="d3" onchange="ren()">
-            <select id="s3" onchange="ren()"></select>
-            <textarea id="oNote" placeholder="Ödev notu..." rows="2" oninput="sn('od')"></textarea>
-            <div id="l3"></div>
-        </div>
-    </div>
-
-    <div id="p6" class="page">
-        <div class="card">
-            <h3>Sözlü Puanı</h3>
-            <input type="date" id="d6" onchange="ren()">
-            <select id="s6" onchange="ren()"></select>
-            <textarea id="sNote" placeholder="Konu..." rows="2" oninput="sn('sz')"></textarea>
-            <div id="l6"></div>
-        </div>
-    </div>
-
-    <div id="p4" class="page">
-        <div class="card">
-            <h3>Genel Rapor</h3>
-            <button class="btn-m" style="background:var(--s)" onclick="exXLS()">📥 EXCEL İNDİR</button>
-            <button class="btn-m" style="background:#64748b" onclick="window.print()">🖨️ PDF / YAZDIR</button>
-            <div id="repArea" style="overflow-x:auto"></div>
-        </div>
-    </div>
+    <div id="p2" class="page"><div class="card"><h3>Katılım</h3><input type="date" id="d2" onchange="ren()"><select id="s2" onchange="ren()"></select><div id="l2"></div></div></div>
+    <div id="p3" class="page"><div class="card"><h3>Ödev Takibi</h3><input type="date" id="d3" onchange="ren()"><select id="s3" onchange="ren()"></select><textarea id="oNote" placeholder="Ödev notu..." rows="2" oninput="sn('od')"></textarea><div id="l3"></div></div></div>
+    <div id="p6" class="page"><div class="card"><h3>Sözlü Puanı</h3><input type="date" id="d6" onchange="ren()"><select id="s6" onchange="ren()"></select><textarea id="sNote" placeholder="Konu..." rows="2" oninput="sn('sz')"></textarea><div id="l6"></div></div></div>
+    <div id="p4" class="page"><div class="card"><h3>Rapor</h3><button class="btn-m" style="background:var(--s)" onclick="exXLS()">📥 EXCEL İNDİR</button><button class="btn-m" style="background:#64748b" onclick="window.print()">🖨️ YAZDIR / PDF</button><div id="repArea" style="overflow-x:auto"></div></div></div>
     
     <div id="p5" class="page">
         <div class="card">
-            <h3>Sistem Yönetimi</h3>
-            <p style="font-size:12px; margin-bottom:15px; color:#64748b">Dikkat: Bu işlem geri alınamaz.</p>
+            <h3>Sınıf ve Öğrenci Yönetimi</h3>
+            <input type="text" id="iCN" placeholder="Sınıf Adı (Örn: 4-B)">
+            <textarea id="iCS" rows="5" placeholder="Öğrenciler (Her satıra bir isim)"></textarea>
+            <button class="btn-m" onclick="addNewCls()">Sınıfı/Listeyi Kaydet</button>
+        </div>
+        <div class="card">
             <button class="btn-m" style="background:var(--d)" onclick="reset()">⚠️ TÜM SİSTEMİ SIFIRLA</button>
         </div>
     </div>
@@ -125,7 +100,7 @@
 const defO = ["Ali Ömer ARSLAN","Arda ARSLAN","Ayşe ŞINIK","Barış HALLUM","Beyazıt GÖRKEN","Bilgesu TOPRAK","Bora ALAS","Defne KAYNAR","Derin URAZ","Elif ÇİTKAP","Emir Efe ALPER","Esra DEMİRLİ","Eymen HALICI","Hüma ALTINIŞIK","İpek ELDEK","Irmak ERDEM","Kumsal GÜNDOĞARKEN","Melis KILIÇ","Mert BALCIOĞLU","Musa KARAÖZ","Mustafa DAL","Naz AKGÜN","Nisa YALILAR","Onuralp TOK","Önder TURĞAY","Poyraz SEZGİN","Roza AYDIN","Rüzgar GÜL","Yaz YILMAZ","Yusuf BİRLİK"];
 const defD = ["Türkçe","Matematik","Fen Bilimleri","Sosyal Bilgiler","İngilizce","Trafik","İnsan Hakları"];
 
-let st = JSON.parse(localStorage.getItem('ok_v49_stable')) || { cls: {"4-B": defO}, cur: "4-B", ders: defD, db: { v:{}, k:{}, od:{}, sz:{}, n_od:{}, n_sz:{} } };
+let st = JSON.parse(localStorage.getItem('ok_v50_final')) || { cls: {"4-B": defO}, cur: "4-B", ders: defD, db: { v:{}, k:{}, od:{}, sz:{}, n_od:{}, n_sz:{} } };
 
 function nv(id, btn) {
     document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
@@ -135,26 +110,29 @@ function nv(id, btn) {
     if(id === 'p4') rRep();
 }
 
-function saveAll() { localStorage.setItem('ok_v49_stable', JSON.stringify(st)); alert("Kaydedildi!"); }
+function saveAll() { localStorage.setItem('ok_v50_final', JSON.stringify(st)); alert("Kaydedildi!"); }
 function reset() { if(confirm('Sıfırlansın mı?')){ localStorage.clear(); location.reload(); } }
+
+function addNewCls() {
+    const n = document.getElementById('iCN').value.trim();
+    const s = document.getElementById('iCS').value.split('\n').filter(x=>x.trim()!=="").sort((a,b)=>a.localeCompare(b,'tr'));
+    if(!n || s.length===0) return alert("Hata! Ad veya liste boş.");
+    st.cls[n] = s; st.cur = n; saveAll(); location.reload();
+}
 
 function sn(t) {
     const id = t === 'od' ? 's3' : 's6';
     const nId = t === 'od' ? 'oNote' : 'sNote';
     const dId = t === 'od' ? 'd3' : 'd6';
-    const key = document.getElementById(dId).value + "_" + document.getElementById(id).value;
-    if(key) st.db[t === 'od' ? 'n_od' : 'n_sz'][key + "_" + st.cur] = document.getElementById(nId).value;
+    const key = document.getElementById(dId).value + "_" + document.getElementById(id).value + "_" + st.cur;
+    st.db[t === 'od' ? 'n_od' : 'n_sz'][key] = document.getElementById(nId).value;
 }
 
 function uv(t, date, course, name, val) {
-    const fK = date + "_" + course + "_" + st.cur;
+    const fK = date + "_" + (course || "") + "_" + st.cur;
     if(!st.db[t][fK]) st.db[t][fK] = {};
-    // Yoklama için geri alma mantığı
-    if(t === 'v' && val === 'v') {
-        delete st.db[t][fK][name];
-    } else {
-        st.db[t][fK][name] = val;
-    }
+    if(t === 'v' && val === 'v') { delete st.db[t][fK][name]; } 
+    else { st.db[t][fK][name] = val; }
     ren();
 }
 
@@ -165,29 +143,21 @@ function ren() {
     const dt3 = document.getElementById('d3').value, c3 = document.getElementById('s3').value || "G";
     const dt6 = document.getElementById('d6').value, c6 = document.getElementById('s6').value || "G";
 
-    // Yoklama
-    const vK = dt1 + "__" + st.cur;
     document.getElementById('l1').innerHTML = list.map(s => `
-        <div class="row"><span>${s}</span><div>
-            <button class="btn-s ${st.db.v[vK]?.[s] === 'y' ? '' : 'btn-p'}" onclick="uv('v','${dt1}','','${s}','v')">VAR</button>
-            <button class="btn-s ${st.db.v[vK]?.[s] === 'y' ? 'off' : ''}" onclick="uv('v','${dt1}','','${s}','y')">YOK</button>
+        <div class="row"><span class="stu-name">${s}</span><div>
+            <button class="btn-s ${st.db.v[dt1+"__"+st.cur]?.[s] === 'y' ? '' : 'btn-var'}" onclick="uv('v','${dt1}','','${s}','v')">VAR</button>
+            <button class="btn-s ${st.db.v[dt1+"__"+st.cur]?.[s] === 'y' ? 'off' : ''}" onclick="uv('v','${dt1}','','${s}','y')">YOK</button>
         </div></div>`).join('');
     
-    // Katılım
-    const kK = dt2 + "_" + c2 + "_" + st.cur;
-    document.getElementById('l2').innerHTML = list.map(s => `<div class="row"><span>${s}</span><button class="btn-s ${st.db.k[kK]?.[s] ? 'on' : ''}" onclick="uv('k','${dt2}','${c2}','${s}',${!st.db.k[kK]?.[s]})">⭐</button></div>`).join('');
+    document.getElementById('l2').innerHTML = list.map(s => `<div class="row"><span class="stu-name">${s}</span><button class="btn-s ${st.db.k[dt2+"_"+c2+"_"+st.cur]?.[s] ? 'on' : ''}" onclick="uv('k','${dt2}','${c2}','${s}',${!st.db.k[dt2+"_"+c2+"_"+st.cur]?.[s]})">⭐</button></div>`).join('');
     
-    // Ödev
-    const oK = dt3 + "_" + c3 + "_" + st.cur;
-    document.getElementById('oNote').value = st.db.n_od[oK] || "";
-    document.getElementById('l3').innerHTML = list.map(s => `<div class="row"><span>${s}</span><button class="btn-s ${st.db.od[oK]?.[s] ? 'on' : ''}" onclick="uv('od','${dt3}','${c3}','${s}',${!st.db.od[oK]?.[s]})">✅</button></div>`).join('');
+    document.getElementById('oNote').value = st.db.n_od[dt3+"_"+c3+"_"+st.cur] || "";
+    document.getElementById('l3').innerHTML = list.map(s => `<div class="row"><span class="stu-name">${s}</span><button class="btn-s ${st.db.od[dt3+"_"+c3+"_"+st.cur]?.[s] ? 'on' : ''}" onclick="uv('od','${dt3}','${c3}','${s}',${!st.db.od[dt3+"_"+c3+"_"+st.cur]?.[s]})">✅</button></div>`).join('');
 
-    // Sözlü
-    const sK = dt6 + "_" + c6 + "_" + st.cur;
-    document.getElementById('sNote').value = st.db.n_sz[sK] || "";
+    document.getElementById('sNote').value = st.db.n_sz[dt6+"_"+c6+"_"+st.cur] || "";
     document.getElementById('l6').innerHTML = list.map(s => {
-        const val = st.db.sz[sK]?.[s];
-        return `<div class="row"><span class="stu-name stu-link" onclick="openK('${s}')">${s}</span><div style="display:flex; gap:4px;">${[1,2,3,4].map(n => `<button class="btn-n ${val == n ? 'selected' : ''}" onclick="uv('sz','${dt6}','${c6}','${s}',${n})">${n}</button>`).join('')}</div></div>`;
+        const val = st.db.sz[dt6+"_"+c6+"_"+st.cur]?.[s];
+        return `<div class="row"><span class="stu-name" style="color:blue;text-decoration:underline" onclick="openK('${s}')">${s}</span><div style="display:flex; gap:4px;">${[1,2,3,4].map(n => `<button class="btn-n ${val == n ? 'selected' : ''}" onclick="uv('sz','${dt6}','${c6}','${s}',${n})">${n}</button>`).join('')}</div></div>`;
     }).join('');
 }
 
@@ -218,12 +188,10 @@ function rRep() {
 }
 
 function exXLS() { 
-    try {
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.table_to_sheet(document.getElementById('mT'));
-        XLSX.utils.book_append_sheet(wb, ws, "Rapor");
-        XLSX.writeFile(wb, st.cur + "_Rapor.xlsx"); 
-    } catch(e) { alert("Excel oluşturulamadı!"); }
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.table_to_sheet(document.getElementById('mT'));
+    XLSX.utils.book_append_sheet(wb, ws, "Rapor");
+    XLSX.writeFile(wb, st.cur + "_Rapor.xlsx"); 
 }
 
 window.onload = function() {
@@ -231,6 +199,9 @@ window.onload = function() {
     ['d1','d2','d3','d6'].forEach(id => document.getElementById(id).value = today);
     const opt = '<option value="">- Ders -</option>' + st.ders.map(d => `<option value="${d}">${d}</option>`).join('');
     ['s2','s3','s6'].forEach(id => document.getElementById(id).innerHTML = opt);
+    document.getElementById('displayClass').innerText = "Sınıf: " + st.cur;
+    document.getElementById('iCN').value = st.cur;
+    document.getElementById('iCS').value = st.cls[st.cur].join('\n');
     ren();
 };
 </script>
