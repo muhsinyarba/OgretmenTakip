@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Öğretmen Takip PRO V50</title>
+<title>Öğretmen Takip PRO V51</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -55,7 +55,7 @@
 </head>
 <body>
 
-<header>ÖĞRETMEN TAKİP PRO V50</header>
+<header>ÖĞRETMEN TAKİP PRO V51</header>
 
 <div class="top-panel">
   <span id="displayClass" style="font-size:12px; font-weight:bold;">Sınıf: Seçilmedi</span>
@@ -83,8 +83,13 @@
         <div class="card">
             <h3>Sınıf ve Öğrenci Yönetimi</h3>
             <input type="text" id="iCN" placeholder="Sınıf Adı (Örn: 4-B)">
-            <textarea id="iCS" rows="5" placeholder="Öğrenciler (Her satıra bir isim)"></textarea>
+            <textarea id="iCS" rows="4" placeholder="Öğrenciler (Her satıra bir isim)"></textarea>
             <button class="btn-m" onclick="addNewCls()">Sınıfı/Listeyi Kaydet</button>
+        </div>
+        <div class="card">
+            <h3>Ders Listesini Düzenle</h3>
+            <textarea id="iDS" rows="3" placeholder="Dersler (Virgülle ayırın: Türkçe, Matematik...)"></textarea>
+            <button class="btn-m" style="background:var(--s)" onclick="updateDers()">Dersleri Güncelle</button>
         </div>
         <div class="card">
             <button class="btn-m" style="background:var(--d)" onclick="reset()">⚠️ TÜM SİSTEMİ SIFIRLA</button>
@@ -100,7 +105,7 @@
 const defO = ["Ali Ömer ARSLAN","Arda ARSLAN","Ayşe ŞINIK","Barış HALLUM","Beyazıt GÖRKEN","Bilgesu TOPRAK","Bora ALAS","Defne KAYNAR","Derin URAZ","Elif ÇİTKAP","Emir Efe ALPER","Esra DEMİRLİ","Eymen HALICI","Hüma ALTINIŞIK","İpek ELDEK","Irmak ERDEM","Kumsal GÜNDOĞARKEN","Melis KILIÇ","Mert BALCIOĞLU","Musa KARAÖZ","Mustafa DAL","Naz AKGÜN","Nisa YALILAR","Onuralp TOK","Önder TURĞAY","Poyraz SEZGİN","Roza AYDIN","Rüzgar GÜL","Yaz YILMAZ","Yusuf BİRLİK"];
 const defD = ["Türkçe","Matematik","Fen Bilimleri","Sosyal Bilgiler","İngilizce","Trafik","İnsan Hakları"];
 
-let st = JSON.parse(localStorage.getItem('ok_v50_final')) || { cls: {"4-B": defO}, cur: "4-B", ders: defD, db: { v:{}, k:{}, od:{}, sz:{}, n_od:{}, n_sz:{} } };
+let st = JSON.parse(localStorage.getItem('ok_v51_final')) || { cls: {"4-B": defO}, cur: "4-B", ders: defD, db: { v:{}, k:{}, od:{}, sz:{}, n_od:{}, n_sz:{} } };
 
 function nv(id, btn) {
     document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
@@ -110,7 +115,7 @@ function nv(id, btn) {
     if(id === 'p4') rRep();
 }
 
-function saveAll() { localStorage.setItem('ok_v50_final', JSON.stringify(st)); alert("Kaydedildi!"); }
+function saveAll() { localStorage.setItem('ok_v51_final', JSON.stringify(st)); alert("Kaydedildi!"); }
 function reset() { if(confirm('Sıfırlansın mı?')){ localStorage.clear(); location.reload(); } }
 
 function addNewCls() {
@@ -118,6 +123,13 @@ function addNewCls() {
     const s = document.getElementById('iCS').value.split('\n').filter(x=>x.trim()!=="").sort((a,b)=>a.localeCompare(b,'tr'));
     if(!n || s.length===0) return alert("Hata! Ad veya liste boş.");
     st.cls[n] = s; st.cur = n; saveAll(); location.reload();
+}
+
+function updateDers() {
+    const dStr = document.getElementById('iDS').value;
+    if(!dStr.trim()) return alert("Ders listesi boş olamaz.");
+    st.ders = dStr.split(',').map(d => d.trim()).filter(d => d !== "");
+    saveAll(); location.reload();
 }
 
 function sn(t) {
@@ -202,6 +214,7 @@ window.onload = function() {
     document.getElementById('displayClass').innerText = "Sınıf: " + st.cur;
     document.getElementById('iCN').value = st.cur;
     document.getElementById('iCS').value = st.cls[st.cur].join('\n');
+    document.getElementById('iDS').value = st.ders.join(', ');
     ren();
 };
 </script>
